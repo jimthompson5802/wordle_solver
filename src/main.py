@@ -30,6 +30,7 @@ def main():
         if not isinstance(result, bool):
             # Update the word list
             word_list.update_state(result)
+            word_list.print_state()
             
             # Get a random word
             word = word_list.get_candidate_words()

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import random
 import re
+import os
 
 class WordListGeneratorBase:
     def __init__(self, words_fp):
@@ -11,6 +12,7 @@ class WordListGeneratorBase:
             "correct": set(),
             "absent": set()
         }
+        self.dump_file_count = 0
 
     def load(self):
         with open(self.words_fp, 'r') as file:
@@ -31,6 +33,9 @@ class WordListGeneratorBase:
         for key in result:
             self.global_state[key].update(result[key])
 
+    def print_state(self):
+        print(f"global_state: {self.global_state}")
+
     @abstractmethod
     def get_candidate_words(self):
         raise NotImplementedError
@@ -38,7 +43,7 @@ class WordListGeneratorBase:
 
 class WordListGeneratorRandom(WordListGeneratorBase):
 
-    def get_candidate_words(self):
+    def get_candidate_words(self, dump_candidates=False):
         before_size = len(self.candidate_words)
         # Update the list of candidate words
         self.candidate_words = self._eliminate_words_with_letters()
@@ -55,6 +60,11 @@ class WordListGeneratorRandom(WordListGeneratorBase):
 
         # print before and after size
         print(f"before_size: {before_size}, after_size: {after_size}")
+
+        if dump_candidates:
+            self.dump_file_count += 1
+            with open(f"data/candidates_{self.dump_file_count:03}.txt", 'w') as file:
+                file.write('\n'.join(self.candidate_words))
 
         # Return a random word from the list of candidate words
         if len(self.candidate_words) == 0:
