@@ -123,4 +123,4 @@ dmypy.json
 cython_debug/
 
 # data files
-data/five-letter-words.txt
+*.txt
