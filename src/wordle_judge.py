@@ -4,19 +4,23 @@ class WordleJudge:
 
     def judge_guess(self, guess):
         guess = guess.lower()
-        result = {"present": [], "correct": [], "absent": []}
 
-        for i, letter in enumerate(guess):
-            if letter == self.correct_word[i]:
-                result["correct"].append(letter)
-            elif letter in self.correct_word:
-                # Avoid counting the same letter more than once
-                if letter not in result["present"]:
-                    result["present"].append(letter)
-            else:
-                result["absent"].append(letter)
+        if guess == self.correct_word:
+            return True
+        else:
+            result = {"present": [], "correct": [], "absent": []}
 
-        return result
+            for i, letter in enumerate(guess):
+                if letter == self.correct_word[i]:
+                    result["correct"].append((i, letter))
+                elif letter in self.correct_word:
+                    # Avoid counting the same letter more than once
+                    if letter not in result["present"]:
+                        result["present"].append(letter)
+                else:
+                    result["absent"].append(letter)
+
+            return result
 
 if __name__ == "__main__":
     # Example Usage
