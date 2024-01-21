@@ -8,6 +8,11 @@
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
+	// mount local source folder into container
+	"mounts": [
+		"source=/Users/jim/Desktop/.openai,target=/openai,type=bind,consistency=cached"	
+	],
+
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
