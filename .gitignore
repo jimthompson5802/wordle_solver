@@ -105,6 +105,9 @@ venv.bak/
 #vscode
 .vscode/
 
+# Mac OS
+.DS_Store
+
 # Rope project settings
 .ropeproject
 
