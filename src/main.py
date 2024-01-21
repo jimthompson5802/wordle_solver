@@ -1,13 +1,16 @@
 
-from wordle_solver import WordListGeneratorRandom
+from wordle_solver import WordListGeneratorRandom, WordListGeneratorLLM
 from wordle_judge import WordleJudge
+
+MANUAL_GUESS = True
 
 def main():
     # Create a WordleJudge object
     wordle_game = WordleJudge("apple")
 
     # Create a WordList object
-    word_list = WordListGeneratorRandom("data/five-letter-words.txt")
+    # word_list = WordListGeneratorRandom("data/five-letter-words.txt")
+    word_list = WordListGeneratorLLM("data/five-letter-words.txt")
     word_list.load()
 
     # create initial guess
@@ -32,16 +35,17 @@ def main():
             word_list.update_state(result)
             word_list.print_state()
             
-            # Get a random word
-            word = word_list.get_candidate_words()
+            if MANUAL_GUESS:
+                word_list.get_candidate_words(dump_candidates=MANUAL_GUESS)
+                word = input("Enter a word: ")
+            else:
+                # Get a random word
+                word = word_list.get_candidate_words(dump_candidates=MANUAL_GUESS)
             if word is None:
                 print(">>>>No candidate words left")
                 break
     
     print(f"global_state: {word_list.global_state}")
     
-
-   
-
 if __name__ == "__main__":
     main()

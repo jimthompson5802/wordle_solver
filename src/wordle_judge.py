@@ -16,7 +16,7 @@ class WordleJudge:
                 elif letter in self.correct_word:
                     # Avoid counting the same letter more than once
                     if letter not in result["present"]:
-                        result["present"].append(letter)
+                        result["present"].append((i, letter))
                 else:
                     result["absent"].append(letter)
 

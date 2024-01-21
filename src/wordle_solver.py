@@ -36,14 +36,7 @@ class WordListGeneratorBase:
     def print_state(self):
         print(f"global_state: {self.global_state}")
 
-    @abstractmethod
-    def get_candidate_words(self):
-        raise NotImplementedError
-
-
-class WordListGeneratorRandom(WordListGeneratorBase):
-
-    def get_candidate_words(self, dump_candidates=False):
+    def update_candidate_words(self, dump_candidates=False):
         before_size = len(self.candidate_words)
         # Update the list of candidate words
         self.candidate_words = self._eliminate_words_with_letters()
@@ -66,8 +59,95 @@ class WordListGeneratorRandom(WordListGeneratorBase):
             with open(f"data/candidates_{self.dump_file_count:03}.txt", 'w') as file:
                 file.write('\n'.join(self.candidate_words))
 
+    @abstractmethod
+    def get_candidate_words(self):
+        raise NotImplementedError
+
+
+class WordListGeneratorRandom(WordListGeneratorBase):
+
+    def get_candidate_words(self, dump_candidates=False):
+        self.update_candidate_words(dump_candidates=dump_candidates)
+
         # Return a random word from the list of candidate words
         if len(self.candidate_words) == 0:
             return None
         else:
             return random.choice(self.candidate_words)
+        
+class WordListGeneratorLLM(WordListGeneratorBase):
+
+    prompt_template1 = "Select words from a list of words with these criteria. \n"
+
+    @staticmethod
+    def _generate_position_text(position):
+        match position:
+            case 0:
+                return "first"
+            case 1:
+                return "second"
+            case 2:
+                return "third"
+            case 3:
+                return "fourth"
+            case 4:
+                return "fifth"
+            case _:
+                return "unknown"
+
+
+    def generate_correct_letter_prompt(self):
+        if len(self.global_state["correct"]) == 0:
+            return " "
+        else:
+            return ", ".join(
+                [f"{letter} in the {self._generate_position_text(position)}"  for position, letter in self.global_state["correct"]]
+            )
+
+    def generate_avoid_present_letter_prompt(self):
+        if len(self.global_state["present"]) == 0:
+            return "  "
+        else:
+            return ", ".join(
+                [f" '{letter}'  in the {self._generate_position_text(position)} position " for position, letter in self.global_state["present"]]
+            )
+
+    def generate_absent_letter_prompt(self):
+        if len(self.global_state["absent"]) == 0:
+            return "  "
+        else:
+            return ", ".join(
+                [f" '{letter}'" for letter in self.global_state["absent"]]
+            )
+
+    def get_candidate_words(self, dump_candidates=False):
+        self.update_candidate_words(dump_candidates=False)
+
+        if len(self.candidate_words) == 0:
+            return None
+        else:
+            # generate prompt for LLM
+            prompt_correct_letters = self.generate_correct_letter_prompt()
+            prompt_absent_letters = self.generate_absent_letter_prompt()
+            prompt_avoid_present_letters = self.generate_avoid_present_letter_prompt()
+
+            candidate_word_list = '\n'.join(self.candidate_words)
+            prompt_candidate_word_list = f"select the most likely word from this list:\n{candidate_word_list}"
+            if dump_candidates:
+                self.dump_file_count += 1
+                with open(f"data/prompts_{self.dump_file_count:03}.txt", 'w') as file:
+                    file.write(
+                        self.prompt_template1
+                        + "Select words with letters in the following positions: " 
+                        + prompt_correct_letters 
+                        + "\n" 
+                        + "Do not select words that contin these letters: "
+                        + prompt_absent_letters
+                        + "\n"
+                        + f"When select a word that do not have letters in the following positions: {prompt_avoid_present_letters}. "
+                        + "\n"
+                        + prompt_candidate_word_list
+                    )
+
+
+
