@@ -86,8 +86,6 @@ class WordListGeneratorLLM(WordListGeneratorBase):
 
     MAX_SIZE = 500
 
-    prompt_template1 = "Select words from a list of words with these criteria. \n"
-
     @staticmethod
     def _generate_position_text(position):
         match position:
@@ -107,27 +105,45 @@ class WordListGeneratorLLM(WordListGeneratorBase):
 
     def generate_correct_letter_prompt(self):
         if len(self.global_state["correct"]) == 0:
-            return "There are no correct letters. "
+            prompt_specifics =  ""
         else:
-            return ", ".join(
-                [f"'{letter}' in the {self._generate_position_text(position)}"  for position, letter in self.global_state["correct"]]
+            tuple_list = list(self.global_state["correct"])
+            tuple_list.sort(key=lambda x: x[0])
+            prompt_specifics =  ", ".join(
+                [f"'{letter}' in the {self._generate_position_text(position)}"  for position, letter in tuple_list]
             )
+        if len(prompt_specifics) == 0:
+            return ""
+        else:
+            return "Words must contain these letters in the following positions: " + prompt_specifics + ".\n"
 
     def generate_present_letter_prompt(self):
         if len(self.global_state["present"]) == 0:
-            return "  "
+            prompt_specifics = ""
         else:
-            return ", ".join(
-                [f" '{letter}'  in the {self._generate_position_text(position)} position " for position, letter in self.global_state["present"]]
+            tuple_list = list(self.global_state["present"])
+            tuple_list.sort(key=lambda x: x[0])
+            prompt_specifics =  ", ".join(
+                [f" '{letter}' should not be in the {self._generate_position_text(position)} position" for position, letter in tuple_list]
             )
+
+        if len(prompt_specifics) == 0:
+            return ""
+        else:
+            return "Words must contain these letters with the position restrictions: " + prompt_specifics + ".\n"
 
     def generate_absent_letter_prompt(self):
         if len(self.global_state["absent"]) == 0:
-            return "  "
+            prompt_specifics = ""
         else:
-            return ", ".join(
+            prompt_specifics =  ", ".join(
                 [f" '{letter}'" for letter in self.global_state["absent"]]
             )
+
+        if len(prompt_specifics) == 0:
+            return ""
+        else:
+            return "Words that do not contain these letters: " + prompt_specifics + ".\n"
 
     def generate_llm_prompt(self):
         self.update_candidate_words(dump_candidates=False)
@@ -141,23 +157,23 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             prompt_present_letters = self.generate_present_letter_prompt()
 
             if len(self.candidate_words) > self.MAX_SIZE:
-                 candidate_word_list = '\n'.join(random.sample(self.candidate_words, 500))
+                # hueristic: if the candidate word list is too long and will exceed the LLM token limit
+                 candidate_word_list = '\n'.join(random.sample(self.candidate_words, self.MAX_SIZE))
             else:
+                # otherwise, just the whole list for the prompt
                 candidate_word_list = '\n'.join(self.candidate_words)
 
             self.dump_file_count += 1
             with open(f"data/prompts_{self.dump_file_count:03}.txt", 'w') as file:
                 file.write(
-                    self.prompt_template1
-                    + "These letters in the correct positions: " 
-                    + prompt_correct_letters 
-                    + "\n" 
-                    + "These letters are not in the word: "
+                    "You are a virutal assistant that will help solve the Wordle puzzle. "
+                    + "Solve the puzzle by guessing a five-letter word using these clues.\n"
+                    + prompt_correct_letters
+                    + prompt_present_letters 
                     + prompt_absent_letters
-                    + "\n"
-                    + f"These letters are in word but in wrong poistion: {prompt_present_letters}. "
-                    + "\n"
-                    + "Select one word from the list that solves the puzzle or can be used to eliminate a large number of words\n"
+                    + "Select a word from the list that solves the puzzle or can be used to eliminate a large number of words. "
+                    + "If more than one word meets the criteria, select the word that is more common. "
+                    + "Provide step-by-step instructions for how you arrived at the selected word.\n"
                     + candidate_word_list
                 )
 
