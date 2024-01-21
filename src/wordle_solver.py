@@ -84,7 +84,7 @@ class WordListGeneratorRandom(WordListGeneratorBase):
         
 class WordListGeneratorLLM(WordListGeneratorBase):
 
-    MAX_SIZE = 500
+    MAX_SIZE = 25
 
     @staticmethod
     def _generate_position_text(position):
@@ -166,13 +166,13 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             self.dump_file_count += 1
             with open(f"data/prompts_{self.dump_file_count:03}.txt", 'w') as file:
                 file.write(
-                    "You are a virutal assistant that will help solve the Wordle puzzle. "
-                    + "Solve the puzzle by guessing a five-letter word using these clues.\n"
+                    # "You are a virutal assistant that will help solve the Wordle puzzle. "
+                    "Solve the puzzle by guessing a five-letter word using these clues.\n"
                     + prompt_correct_letters
                     + prompt_present_letters 
                     + prompt_absent_letters
-                    + "Select a word from the list of candidate words that solves the puzzle or can be used to "
-                    + "eliminate a large number of candidate words. "
+                    # + "Select a word from the list of candidate words that solves the puzzle or can be used to "
+                    # + "eliminate a large number of candidate words. "
                     + "If more than one word meets the criteria, select the word that is more common. "
                     + "Provide step-by-step instructions for how you arrived at the selected word. "
                     + "When writing the instructions, do not list words.\n"
