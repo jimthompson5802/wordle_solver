@@ -2,7 +2,7 @@
 
 Testbed to automate the solving of WORDLE puzzles.
 
-## contents
+## Core Modules
 ### `src/lll_solver.py`  
 
 Used to test LLM with local WordlJudge Simulator.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
