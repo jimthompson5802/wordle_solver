@@ -1,6 +1,6 @@
 import argparse
 
-from wordle_solver import WordListGeneratorRandom, WordListGeneratorLLM
+from wordle_solver import WordListGeneratorLLM
 from wordle_judge import WordleJudge
 
 def main():
