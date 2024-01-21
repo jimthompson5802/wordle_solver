@@ -3,13 +3,21 @@
 Testbed to automate the solving of WORDLE puzzles.
 
 ## contents
-### `src/main.py`  
+### `src/lll_solver.py`  
 
-main program to test the solver
+Used to test LLM with local WordlJudge Simulator.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
+
+### `src/llm_solver_nyt.py`
+
+Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
+
+#### `src/random_solver.py`
+
+Used to test Random Solver with local WordlJudge Simulator.
 
 ### `src/wordle_judge.py` 
 
-The provided Python code defines a class `WordleJudge` that is used to judge the guesses in a word guessing game, similar to the game Wordle.
+The provided Python code defines a class `WordleJudge` that is used to judge the guesses in a word guessing game, similar to the game Wordle on NYT.
 
 The `WordleJudge` class has two methods: `__init__` and `judge_guess`.
 
