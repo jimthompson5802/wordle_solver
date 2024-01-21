@@ -11,7 +11,7 @@ Used to test LLM with local WordlJudge Simulator.  Depends on OpenAI GPT4 model 
 
 Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
 
-#### `src/random_solver.py`
+### `src/random_solver.py`
 
 Used to test Random Solver with local WordlJudge Simulator.
 
