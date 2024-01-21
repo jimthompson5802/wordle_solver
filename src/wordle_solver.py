@@ -3,6 +3,20 @@ import random
 import re
 
 class WordListGeneratorBase:
+    """
+    A base class used to generate a list of candidate words for the Wordle game.
+
+    This class provides methods to load words from a file, update the game state, and update the 
+    candidate_words list based on the current game state. The game state includes present, correct, 
+    and absent letters and their positions.
+
+    Attributes:
+        words_fp (str): The file path to the file containing the words.
+        candidate_words (list): A list of candidate words for the Wordle game.
+        global_state (dict): A dictionary that stores the current state of the Wordle game.
+        dump_file_count (int): The number of times the candidate_words list has been dumped to a file.
+    """
+
     def __init__(self, words_fp):
         self.words_fp = words_fp
         self.candidate_words = []
@@ -124,6 +138,18 @@ class WordListGeneratorBase:
                 file.write('\n'.join(self.candidate_words))
 
 class WordListGeneratorRandom(WordListGeneratorBase):
+    """
+    A class used to generate a list of candidate words for the Wordle game.
+
+    This class inherits from the WordListGeneratorBase class and overrides the get_candidate_word method to 
+    return a random word from the candidate_words list.
+
+    Attributes:
+        candidate_words (list): A list of candidate words for the Wordle game.
+        global_state (dict): A dictionary that stores the current state of the Wordle game.
+        words_fp (str): The file path to the file containing the words.
+        dump_file_count (int): The number of times the candidate_words list has been dumped to a file.
+    """
 
     def get_candidate_word(self, dump_candidates=False):
         """
@@ -150,6 +176,20 @@ class WordListGeneratorRandom(WordListGeneratorBase):
             return random.choice(self.candidate_words)
         
 class WordListGeneratorLLM(WordListGeneratorBase):
+    """
+    A class used to generate a list of candidate words for the Wordle game using a Language Model (LLM).
+
+    This class inherits from the WordListGeneratorBase class and overrides several methods to generate prompts 
+    for the LLM based on the current state of the game. The prompts include correct, absent, and present letters 
+    and their positions. The class also generates a list of candidate words and writes the prompts and the list to a file.
+
+    Attributes:
+        MAX_SIZE (int): The maximum size of the candidate_words list.
+        candidate_words (list): A list of candidate words for the Wordle game.
+        global_state (dict): A dictionary that stores the current state of the Wordle game.
+        words_fp (str): The file path to the file containing the words.
+        dump_file_count (int): The number of times the candidate_words list has been dumped to a file.
+    """
 
     MAX_SIZE = 25
 
