@@ -60,3 +60,14 @@ Finally, if the list of candidate words is empty, the method returns `None`. Oth
 
 The `_eliminate_words_with_letters` and `_generate_regex_for_correct` methods are defined in the `WordListGeneratorBase` class. The `_eliminate_words_with_letters` method creates a regular expression that matches any of the absent letters and uses it to filter out words from the list of candidate words. The `_generate_regex_for_correct` method creates a regular expression that matches words with the correct letters in the correct positions.
 
+#### `WordListGeneratorLLM`
+
+Is a subclass of `WordListGeneratorBase`. This class is used to generate prompts for a word guessing game, presumably Wordle.
+
+The class has a static method `_generate_position_text` which takes an integer position and returns a string representation of that position (e.g., "first", "second", etc.). It uses Python's `match-case` statement for this.
+
+The `generate_correct_letter_prompt`, `generate_present_letter_prompt`, and `generate_absent_letter_prompt` methods generate prompts based on the current game state. They use the global state of the game to generate specific prompts about the correct, present, and absent letters.
+
+The `generate_llm_prompt` method is the main method that generates the full prompt for the game. It first updates the candidate words. If there are no candidate words, it returns `None`. Otherwise, it generates the prompts for correct, present, and absent letters. If the number of candidate words is greater than `MAX_SIZE` (500), it randomly selects `MAX_SIZE` words from the candidate words. It then writes the full prompt to a file.
+
+The full prompt includes a brief description of the game, the prompts for correct, present, and absent letters, a request to select a word from the list, and the list of candidate words. The prompt is written to a file with a name like `prompts_001.txt`, `prompts_002.txt`, etc. The file count is stored in `self.dump_file_count` and is incremented each time a new prompt is generated.
