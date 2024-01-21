@@ -2,14 +2,13 @@
 from wordle_solver import WordListGeneratorRandom, WordListGeneratorLLM
 from wordle_judge import WordleJudge
 
-MANUAL_GUESS = True
-
 def main():
     # Create a WordleJudge object
-    wordle_game = WordleJudge("apple")
+    # wordle_game = WordleJudge("apple")
+    # wordle_game = WordleJudge("large")
+    wordle_game = WordleJudge("zebra")
 
     # Create a WordList object
-    # word_list = WordListGeneratorRandom("data/five-letter-words.txt")
     word_list = WordListGeneratorLLM("data/five-letter-words.txt")
     word_list.load()
 
@@ -35,12 +34,8 @@ def main():
             word_list.update_state(result)
             word_list.print_state()
             
-            if MANUAL_GUESS:
-                word_list.get_candidate_words(dump_candidates=MANUAL_GUESS)
-                word = input("Enter a word: ")
-            else:
-                # Get a random word
-                word = word_list.get_candidate_words(dump_candidates=MANUAL_GUESS)
+            word_list.generate_llm_prompt()
+            word = input("Enter a word: ")
             if word is None:
                 print(">>>>No candidate words left")
                 break

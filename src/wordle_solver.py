@@ -1,7 +1,6 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 import random
 import re
-import os
 
 class WordListGeneratorBase:
     def __init__(self, words_fp):
@@ -18,16 +17,30 @@ class WordListGeneratorBase:
         with open(self.words_fp, 'r') as file:
             self.candidate_words = [line.strip() for line in file]
 
-    def _eliminate_words_with_letters(self):
+    def _eliminate_words_with_absent_letters(self):
         letter_regex = '[' + ''.join(self.global_state["absent"]) + ']'
-        return [word for word in self.candidate_words if not re.search(letter_regex, word)]
+        self.candidate_words = [word for word in self.candidate_words if not re.search(letter_regex, word)]
 
-    def _generate_regex_for_correct(self):
+    def _keep_words_with_correct_letters(self):
         word_pattern = ["." for _ in range(5)]
         for position, letter in self.global_state["correct"]:
             word_pattern[position] = letter
         regex = "^" + ''.join(word_pattern) + "$"
-        return re.compile(regex)
+        correct_regex = re.compile(regex)
+        self.candidate_words = [word for word in self.candidate_words if correct_regex.match(word)]
+    
+    def _eliminate_words_with_present_letters(self):
+        if len(self.global_state["present"]) > 0:
+            for position, letter in self.global_state["present"]:
+                word_pattern = ["." for _ in range(5)]
+                word_pattern[position] = letter
+                regex = "^" + ''.join(word_pattern) + "$"
+                new_list = []
+                for word in self.candidate_words:
+                    if not re.search(regex, word):
+                        new_list.append(word)
+                # self.candidate_words = [word for word in self.candidate_words if not re.search(regex, word)]
+                self.candidate_words = new_list
     
     def update_state(self, result):
         for key in result:
@@ -39,14 +52,12 @@ class WordListGeneratorBase:
     def update_candidate_words(self, dump_candidates=False):
         before_size = len(self.candidate_words)
         # Update the list of candidate words
-        self.candidate_words = self._eliminate_words_with_letters()
+        self._eliminate_words_with_absent_letters()
 
-        # Generate regex for correct guesses
-        correct_regex = self._generate_regex_for_correct()
+        self._eliminate_words_with_present_letters()
 
-        # Filter candidate 
-        # words based on correct guesses
-        self.candidate_words = [word for word in self.candidate_words if correct_regex.match(word)]
+        self._keep_words_with_correct_letters()
+        
 
         # get size after filtering
         after_size = len(self.candidate_words)
@@ -59,14 +70,10 @@ class WordListGeneratorBase:
             with open(f"data/candidates_{self.dump_file_count:03}.txt", 'w') as file:
                 file.write('\n'.join(self.candidate_words))
 
-    @abstractmethod
-    def get_candidate_words(self):
-        raise NotImplementedError
-
 
 class WordListGeneratorRandom(WordListGeneratorBase):
 
-    def get_candidate_words(self, dump_candidates=False):
+    def get_candidate_word(self, dump_candidates=False):
         self.update_candidate_words(dump_candidates=dump_candidates)
 
         # Return a random word from the list of candidate words
@@ -76,6 +83,8 @@ class WordListGeneratorRandom(WordListGeneratorBase):
             return random.choice(self.candidate_words)
         
 class WordListGeneratorLLM(WordListGeneratorBase):
+
+    MAX_SIZE = 500
 
     prompt_template1 = "Select words from a list of words with these criteria. \n"
 
@@ -98,13 +107,13 @@ class WordListGeneratorLLM(WordListGeneratorBase):
 
     def generate_correct_letter_prompt(self):
         if len(self.global_state["correct"]) == 0:
-            return " "
+            return "There are no correct letters. "
         else:
             return ", ".join(
-                [f"{letter} in the {self._generate_position_text(position)}"  for position, letter in self.global_state["correct"]]
+                [f"'{letter}' in the {self._generate_position_text(position)}"  for position, letter in self.global_state["correct"]]
             )
 
-    def generate_avoid_present_letter_prompt(self):
+    def generate_present_letter_prompt(self):
         if len(self.global_state["present"]) == 0:
             return "  "
         else:
@@ -120,7 +129,7 @@ class WordListGeneratorLLM(WordListGeneratorBase):
                 [f" '{letter}'" for letter in self.global_state["absent"]]
             )
 
-    def get_candidate_words(self, dump_candidates=False):
+    def generate_llm_prompt(self):
         self.update_candidate_words(dump_candidates=False)
 
         if len(self.candidate_words) == 0:
@@ -129,25 +138,28 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             # generate prompt for LLM
             prompt_correct_letters = self.generate_correct_letter_prompt()
             prompt_absent_letters = self.generate_absent_letter_prompt()
-            prompt_avoid_present_letters = self.generate_avoid_present_letter_prompt()
+            prompt_present_letters = self.generate_present_letter_prompt()
 
-            candidate_word_list = '\n'.join(self.candidate_words)
-            prompt_candidate_word_list = f"select the most likely word from this list:\n{candidate_word_list}"
-            if dump_candidates:
-                self.dump_file_count += 1
-                with open(f"data/prompts_{self.dump_file_count:03}.txt", 'w') as file:
-                    file.write(
-                        self.prompt_template1
-                        + "Select words with letters in the following positions: " 
-                        + prompt_correct_letters 
-                        + "\n" 
-                        + "Do not select words that contin these letters: "
-                        + prompt_absent_letters
-                        + "\n"
-                        + f"When select a word that do not have letters in the following positions: {prompt_avoid_present_letters}. "
-                        + "\n"
-                        + prompt_candidate_word_list
-                    )
+            if len(self.candidate_words) > self.MAX_SIZE:
+                 candidate_word_list = '\n'.join(random.sample(self.candidate_words, 500))
+            else:
+                candidate_word_list = '\n'.join(self.candidate_words)
+
+            self.dump_file_count += 1
+            with open(f"data/prompts_{self.dump_file_count:03}.txt", 'w') as file:
+                file.write(
+                    self.prompt_template1
+                    + "These letters in the correct positions: " 
+                    + prompt_correct_letters 
+                    + "\n" 
+                    + "These letters are not in the word: "
+                    + prompt_absent_letters
+                    + "\n"
+                    + f"These letters are in word but in wrong poistion: {prompt_present_letters}. "
+                    + "\n"
+                    + "Select a word from the list that solves the puzzle or can be used to eliminate a large number of words\n"
+                    + candidate_word_list
+                )
 
 
 
