@@ -126,6 +126,21 @@ class WordListGeneratorBase:
 class WordListGeneratorRandom(WordListGeneratorBase):
 
     def get_candidate_word(self, dump_candidates=False):
+        """
+        Updates the candidate_words list and returns a random word from the list.
+
+        This method first updates the candidate_words list based on the current global_state. If the 
+        list is empty after the update, it returns None. Otherwise, it returns a random word from the list.
+
+        If dump_candidates is True, the updated candidate_words list is written to a file.
+
+        Args:
+            dump_candidates (bool, optional): Whether to write the updated candidate_words list to a file. Defaults to False.
+
+        Returns:
+            str or None: A random word from the candidate_words list, or None if the list is empty.
+        """
+
         self.update_candidate_words(dump_candidates=dump_candidates)
 
         # Return a random word from the list of candidate words
