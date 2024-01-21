@@ -1,13 +1,28 @@
+import argparse
 
 from wordle_solver import WordListGeneratorRandom, WordListGeneratorLLM
 from wordle_judge import WordleJudge
 
 def main():
-    # Create a WordleJudge object
-    # wordle_game = WordleJudge("apple")
-    # wordle_game = WordleJudge("large")
-    wordle_game = WordleJudge("zebra")
+    parser = argparse.ArgumentParser(description='Process some inputs.')
+    parser.add_argument('word', type=str, help='A 5-letter word')
+    parser.add_argument('--api', type=bool, default=False, help='A boolean flag for api')
 
+    args = parser.parse_args()
+
+    # Access the arguments
+    word = args.word
+    api = args.api
+
+    # Ensure the word is 5 letters long
+    if len(word) != 5:
+        raise argparse.ArgumentTypeError("Word must be 5 letters long")
+
+    print(f"Word: {word}, API: {api}")
+
+    # Create a WordleJudge object
+    wordle_game = WordleJudge(word)
+ 
     # Create a WordList object
     word_list = WordListGeneratorLLM("data/five-letter-words.txt")
     word_list.load()
