@@ -2,6 +2,10 @@
 
 Testbed to automate the solving of WORDLE puzzles.
 
+GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the OpenAI Playground Chat.  Using these parameters:
+* temperature=0.1
+* max_tokens=4096
+
 ## Core Modules
 ### `src/lll_solver.py`  
 
