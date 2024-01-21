@@ -157,7 +157,7 @@ class WordListGeneratorLLM(WordListGeneratorBase):
                     + "\n"
                     + f"These letters are in word but in wrong poistion: {prompt_present_letters}. "
                     + "\n"
-                    + "Select a word from the list that solves the puzzle or can be used to eliminate a large number of words\n"
+                    + "Select one word from the list that solves the puzzle or can be used to eliminate a large number of words\n"
                     + candidate_word_list
                 )
 
