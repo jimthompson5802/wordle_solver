@@ -171,9 +171,12 @@ class WordListGeneratorLLM(WordListGeneratorBase):
                     + prompt_correct_letters
                     + prompt_present_letters 
                     + prompt_absent_letters
-                    + "Select a word from the list that solves the puzzle or can be used to eliminate a large number of words. "
+                    + "Select a word from the list of candidate words that solves the puzzle or can be used to "
+                    + "eliminate a large number of candidate words. "
                     + "If more than one word meets the criteria, select the word that is more common. "
-                    + "Provide step-by-step instructions for how you arrived at the selected word.\n"
+                    + "Provide step-by-step instructions for how you arrived at the selected word. "
+                    + "When writing the instructions, do not list words.\n"
+                    + "List of candidate words:\n"
                     + candidate_word_list
                 )
 
