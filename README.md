@@ -185,7 +185,7 @@ Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the Op
 
 Here's a breakdown of what the code does:
 
-1. It first sets up an argument parser to accept a boolean flag `--api` from the command line.
+1. It first sets up an argument parser to accept a boolean flag `--api` from the command line.  If set, it indicates to use the OpenAI Chat API to automatically send the prompt and receive the recommendation.  If not set, it indicates to use the OpenAI Playground Chat to manually send the prompt and receive the recommendation.
 
 2. It creates a `WordListGeneratorLLM` object with a list of five-letter words. This object will be used to generate candidate words for the game.
 
@@ -201,7 +201,7 @@ The `create_correct_result`, `create_present_result`, and `create_absent_result`
 
 #### Current Limiations
 * Requires manual interaction with the NYT website.
-* Requires manual interaction with the OpenAI Playground Chat.
+* Requires manual interaction with the OpenAI Playground Chat if not using the `--api` option.
 * Sometimes the recommended word is not part of the NYT word list.  Manual work-around is to view the last generated prmopt file and select a word from the list.
 
 ### `src/random_solver.py`
