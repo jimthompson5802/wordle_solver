@@ -325,7 +325,7 @@ class WordListGeneratorLLM(WordListGeneratorBase):
                     + "If more than one word meets the criteria, select the word that is more common. "
                     + "Provide step-by-step instructions for how you arrived at the selected word. "
                     + "When writing the instructions, do not list words. "
-                    + "Return a json structure with the key 'recommendation' for the recommended word "
+                    + "Return only a json structure with the key 'recommendation' for the recommended word "
                     + "and 'explanation' for your explantion.\n"
                     + "List of candidate words:\n"
                     + candidate_word_list
