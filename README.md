@@ -215,7 +215,7 @@ When prompted with "Enter present letter pattern: ", you should enter a 5-letter
 
 Use a period (.) for any position where the letter is not present or is in the correct position.
 
-For example, if the correct word is "apple" and you have guessed "pepla", you would enter "..ple" (without the quotes) because the last three letters are present in the word but not in the correct positions, and the first two letters are not present or are in the correct position.
+For example, if the correct word is "apple" and you have guessed "pepla", you would enter "pe..a" (without the quotes) because the three letters are present in the word but not in the correct positions.
 
 #### Enter absent letter pattern:
 When prompted with "Enter absent letter pattern: ", you should enter the letters that are absent from the word.
