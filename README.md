@@ -11,6 +11,24 @@ GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the 
 
 Used to test LLM with local WordleJudge Simulator.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
 
+Here's a breakdown of what the code does:
+
+1. It first sets up an argument parser to accept a 5-letter word and a boolean flag `--api` from the command line.
+
+2. It then validates that the provided word is 5 letters long.
+
+3. It creates a `WordleJudge` object with the provided word. This object will be used to judge the guesses.
+
+4. It creates a `WordListGeneratorLLM` object with a list of five-letter words. This object will be used to generate candidate words for the game.
+
+5. It creates an `OpenAIInterface` object with the OpenAI API key. This object will be used to interact with the OpenAI API.
+
+6. It then enters a loop where it makes guesses at the word. The initial guess is "adieu". If the guess is correct, the loop ends. If the guess is incorrect, the `WordListGeneratorLLM` object updates its state based on the result and generates a new prompt. If the `--api` flag is set, the script sends the prompt to the OpenAI API and uses the response as the next guess. If the `--api` flag is not set, the script asks the user to manually enter the next guess.
+
+7. The loop continues until a correct guess is made or the maximum number of attempts is reached.
+
+8. Finally, it prints the global state of the `WordListGeneratorLLM` object.
+
 #### Sample run manually
 ```
 $ python src/llm_solver.py apple
@@ -104,6 +122,22 @@ ankle
 ### `src/llm_solver_nyt.py`
 
 Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
+
+Here's a breakdown of what the code does:
+
+1. It first sets up an argument parser to accept a boolean flag `--api` from the command line.
+
+2. It creates a `WordListGeneratorLLM` object with a list of five-letter words. This object will be used to generate candidate words for the game.
+
+3. It creates an `OpenAIInterface` object with the OpenAI API key. This object will be used to interact with the OpenAI API.
+
+4. It then enters a loop where it makes guesses at the word. The initial guess is "adieu". If the guess is correct, the loop ends. If the guess is incorrect, the `WordListGeneratorLLM` object updates its state based on the result and generates a new prompt. If the `--api` flag is set, the script sends the prompt to the OpenAI API and uses the response as the next guess. If the `--api` flag is not set, the script asks the user to manually enter the next guess.
+
+5. The loop continues until a correct guess is made or the maximum number of attempts is reached.
+
+6. Finally, it prints the global state of the `WordListGeneratorLLM` object.
+
+The `create_correct_result`, `create_present_result`, and `create_absent_result` functions are helper functions that ask the user to input the correct, present, and absent letter patterns, respectively. These patterns are used to update the state of the `WordListGeneratorLLM` object.
 
 #### Current Limiations
 * Requires manual interaction with the NYT website.
