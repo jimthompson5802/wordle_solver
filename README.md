@@ -7,7 +7,7 @@ GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the 
 * max_tokens=4096
 
 ## Core Modules
-### `src/lll_solver.py`  
+### `src/llm_solver.py`  
 
 Used to test LLM with local WordleJudge Simulator.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
 
