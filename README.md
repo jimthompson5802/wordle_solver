@@ -2,14 +2,14 @@
 
 Testbed to automate the solving of WORDLE puzzles.
 
-GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the OpenAI Playground Chat.  Using these parameters:
+GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the OpenAI Playground Chat and API access is supported.  Using these parameters:
 * temperature=0.1
 * max_tokens=4096
 
 ## Core Modules
 ### `src/llm_solver.py`  
 
-Used to test LLM with local WordleJudge Simulator.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
+Used to test LLM with local WordleJudge Simulator.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat or API.
 
 Here's a breakdown of what the code does:
 
@@ -181,7 +181,7 @@ global_state: {'present': {(3, 'e'), (3, 'p'), (4, 'a'), (2, 'a'), (2, 'e')}, 'c
 
 ### `src/llm_solver_nyt.py`
 
-Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
+Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat or API.
 
 Here's a breakdown of what the code does:
 
