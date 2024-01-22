@@ -108,7 +108,7 @@ Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the Op
 #### Current Limiations
 * Requires manual interaction with the NYT website.
 * Requires manual interaction with the OpenAI Playground Chat.
-* Manual work-around required if recommended word is not part of the NYT word list.
+* Sometimes the recommended word is not part of the NYT word list.  Manual work-around is to view the last generated prmopt file and select a word from the list.
 
 ### `src/random_solver.py`
 
