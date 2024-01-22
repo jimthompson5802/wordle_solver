@@ -29,7 +29,7 @@ Here's a breakdown of what the code does:
 
 8. Finally, it prints the global state of the `WordListGeneratorLLM` object.
 
-#### Sample run manually
+#### Sample run with copy/paste of prompt to OpenAI Playground
 ```
 $ python src/llm_solver.py apple
 Word: apple, API: False
@@ -64,7 +64,7 @@ global_state: {'present': {(3, 'e'), (2, 'a')}, 'correct': {(0, 'a'), (4, 'e')},
 vscode ➜ /workspaces/wordle_solver (main) $ 
 ```
 
-#### Sample run with LLM
+#### Sample run using the OpenAI Chat API to automatically send the prompt and receive the recommendation
 ```
 $ python src/llm_solver.py apple --api
 Word: apple, API: True
@@ -118,6 +118,66 @@ awave
 asana
 ankle
 ```
+
+#### Sample run using ChatGPT interface by uploading the prompt file
+Instead of using OpenAI Playground, loaded the prompt file into ChatGPT. ChatGPT took longer.  Most likely cause is "creative flexibility" in the ChatGPT service.
+```
+ $ python src/llm_solver.py apple
+Word: apple, API: False
+
+Attempt 1 guess is adieu
+The result is {'present': [(3, 'e')], 'correct': [(0, 'a')], 'absent': ['d', 'i', 'u']}
+global_state: {'present': {(3, 'e')}, 'correct': {(0, 'a')}, 'absent': {'i', 'u', 'd'}}
+before_size: 15920, after_size: 476
+
+Copy and paste the prompt file to OpenAI Playground and enter the recommendation
+Enter a word: aroph
+
+Attempt 2 guess is aroph
+The result is {'present': [(3, 'p')], 'correct': [(0, 'a')], 'absent': ['r', 'o', 'h']}
+global_state: {'present': {(3, 'e'), (3, 'p')}, 'correct': {(0, 'a')}, 'absent': {'i', 'o', 'u', 'h', 'r', 'd'}}
+before_size: 476, after_size: 186
+
+Copy and paste the prompt file to OpenAI Playground and enter the recommendation
+Enter a word: ajaja
+
+Attempt 3 guess is ajaja
+The result is {'present': [(2, 'a'), (4, 'a')], 'correct': [(0, 'a')], 'absent': ['j', 'j']}
+global_state: {'present': {(3, 'e'), (4, 'a'), (2, 'a'), (3, 'p')}, 'correct': {(0, 'a')}, 'absent': {'j', 'i', 'o', 'u', 'h', 'r', 'd'}}
+before_size: 186, after_size: 106
+
+Copy and paste the prompt file to OpenAI Playground and enter the recommendation
+Enter a word: angle
+
+Attempt 4 guess is angle
+The result is {'present': [], 'correct': [(0, 'a'), (3, 'l'), (4, 'e')], 'absent': ['n', 'g']}
+global_state: {'present': {(3, 'e'), (4, 'a'), (2, 'a'), (3, 'p')}, 'correct': {(0, 'a'), (3, 'l'), (4, 'e')}, 'absent': {'j', 'i', 'o', 'u', 'g', 'h', 'r', 'n', 'd'}}
+before_size: 106, after_size: 6
+
+Copy and paste the prompt file to OpenAI Playground and enter the recommendation
+Enter a word: abele
+
+Attempt 5 guess is abele
+The result is {'present': [(2, 'e')], 'correct': [(0, 'a'), (3, 'l'), (4, 'e')], 'absent': ['b']}
+global_state: {'present': {(3, 'e'), (3, 'p'), (4, 'a'), (2, 'a'), (2, 'e')}, 'correct': {(0, 'a'), (3, 'l'), (4, 'e')}, 'absent': {'j', 'i', 'o', 'u', 'g', 'h', 'b', 'r', 'n', 'd'}}
+before_size: 6, after_size: 4
+
+Copy and paste the prompt file to OpenAI Playground and enter the recommendation
+Enter a word: ample
+
+Attempt 6 guess is ample
+The result is {'present': [], 'correct': [(0, 'a'), (2, 'p'), (3, 'l'), (4, 'e')], 'absent': ['m']}
+global_state: {'present': {(3, 'e'), (3, 'p'), (4, 'a'), (2, 'a'), (2, 'e')}, 'correct': {(0, 'a'), (3, 'l'), (2, 'p'), (4, 'e')}, 'absent': {'j', 'i', 'o', 'u', 'g', 'h', 'b', 'r', 'n', 'd', 'm'}}
+before_size: 4, after_size: 1
+
+Copy and paste the prompt file to OpenAI Playground and enter the recommendation
+Enter a word: apple
+
+>>>>Exceed wordle game limit: attempt 7 guess is apple
+The result is True
+global_state: {'present': {(3, 'e'), (3, 'p'), (4, 'a'), (2, 'a'), (2, 'e')}, 'correct': {(0, 'a'), (3, 'l'), (2, 'p'), (4, 'e')}, 'absent': {'j', 'i', 'o', 'u', 'g', 'h', 'b', 'r', 'n', 'd', 'm'}}
+```
+
 
 ### `src/llm_solver_nyt.py`
 
