@@ -2,6 +2,8 @@
 
 Testbed to automate the solving of WORDLE puzzles.
 
+The list of 5-letter words used in the Wordle Solver sourced from https://github.com/dwyl/english-words
+
 GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the OpenAI Playground Chat and API access is supported.  Using these parameters:
 * temperature=0.1
 * max_tokens=4096
