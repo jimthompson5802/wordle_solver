@@ -9,7 +9,7 @@ GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the 
 ## Core Modules
 ### `src/lll_solver.py`  
 
-Used to test LLM with local WordlJudge Simulator.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
+Used to test LLM with local WordleJudge Simulator.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
 
 #### Sample run manually
 ```
@@ -107,7 +107,7 @@ Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the Op
 
 ### `src/random_solver.py`
 
-Used to test Random Solver with local WordlJudge Simulator.
+Used to test Random Solver with local WordleJudge Simulator.
 
 ### `src/wordle_judge.py` 
 
