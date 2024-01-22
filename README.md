@@ -11,6 +11,96 @@ GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the 
 
 Used to test LLM with local WordlJudge Simulator.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
 
+#### Sample run manually
+```
+$ python src/llm_solver.py apple
+Word: apple, API: False
+
+Attempt 1 guess is adieu
+The result is {'present': [(3, 'e')], 'correct': [(0, 'a')], 'absent': ['d', 'i', 'u']}
+global_state: {'present': {(3, 'e')}, 'correct': {(0, 'a')}, 'absent': {'i', 'u', 'd'}}
+before_size: 15920, after_size: 476
+
+Copy and paste the following prompt to OpenAI Playground and enter the recommendation
+Enter a word: astor
+
+Attempt 2 guess is astor
+The result is {'present': [], 'correct': [(0, 'a')], 'absent': ['s', 't', 'o', 'r']}
+global_state: {'present': {(3, 'e')}, 'correct': {(0, 'a')}, 'absent': {'i', 'r', 't', 's', 'o', 'd', 'u'}}
+before_size: 476, after_size: 101
+
+Copy and paste the following prompt to OpenAI Playground and enter the recommendation
+Enter a word: awake
+
+Attempt 3 guess is awake
+The result is {'present': [(2, 'a')], 'correct': [(0, 'a'), (4, 'e')], 'absent': ['w', 'k']}
+global_state: {'present': {(3, 'e'), (2, 'a')}, 'correct': {(0, 'a'), (4, 'e')}, 'absent': {'k', 'i', 'r', 't', 'w', 's', 'o', 'd', 'u'}}
+before_size: 101, after_size: 13
+
+Copy and paste the following prompt to OpenAI Playground and enter the recommendation
+Enter a word: apple
+
+Attempt 4 guess is apple
+The result is True
+global_state: {'present': {(3, 'e'), (2, 'a')}, 'correct': {(0, 'a'), (4, 'e')}, 'absent': {'k', 'i', 'r', 't', 'w', 's', 'o', 'd', 'u'}}
+vscode ➜ /workspaces/wordle_solver (main) $ 
+```
+
+#### Sample run with LLM
+```
+$ python src/llm_solver.py apple --api True
+Word: apple, API: True
+
+Attempt 1 guess is adieu
+The result is {'present': [(3, 'e')], 'correct': [(0, 'a')], 'absent': ['d', 'i', 'u']}
+global_state: {'present': {(3, 'e')}, 'correct': {(0, 'a')}, 'absent': {'d', 'u', 'i'}}
+before_size: 15920, after_size: 476
+
+Attempt 2 guess is actor
+The result is {'present': [], 'correct': [(0, 'a')], 'absent': ['c', 't', 'o', 'r']}
+global_state: {'present': {(3, 'e')}, 'correct': {(0, 'a')}, 'absent': {'c', 'd', 'r', 'i', 't', 'u', 'o'}}
+before_size: 476, after_size: 137
+
+Attempt 3 guess is apple
+The result is True
+global_state: {'present': {(3, 'e')}, 'correct': {(0, 'a')}, 'absent': {'c', 'd', 'r', 'i', 't', 'u', 'o'}}
+```
+
+#### Example Prompt for LLM
+``` 
+Solve the puzzle by guessing a five-letter word using these clues.
+Words must contain these letters in the following positions: 'a' in the first.
+Words must contain these letters with the position restrictions:  'e' should not be in the fourth position.
+Words that do not contain these letters:  'c',  'd',  'r',  'i',  't',  'u',  'o'.
+If more than one word meets the criteria, select the word that is more common. Provide step-by-step instructions for how you arrived at the selected word. When writing the instructions, do not list words. Return only a json structure with the key 'recommendation' for the recommended word and 'explanation' for your explantion.
+List of candidate words:
+avena
+apple
+amass
+abase
+amang
+alans
+abamp
+alvan
+amaas
+awane
+ambas
+amman
+algal
+ameba
+anana
+avell
+allan
+aheap
+apeak
+aveny
+azans
+asaph
+awave
+asana
+ankle
+```
+
 ### `src/llm_solver_nyt.py`
 
 Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
@@ -74,12 +164,29 @@ The `_eliminate_words_with_letters` and `_generate_regex_for_correct` methods ar
 
 #### `WordListGeneratorLLM`
 
-Is a subclass of `WordListGeneratorBase`. This class is used to generate prompts for a word guessing game, presumably Wordle.
+The `WordListGeneratorLLM` class is a subclass of `WordListGeneratorBase` that generates a list of candidate words for the Wordle game using a Language Model (LLM). It overrides several methods to generate prompts for the LLM based on the current state of the game.
 
-The class has a static method `_generate_position_text` which takes an integer position and returns a string representation of that position (e.g., "first", "second", etc.). It uses Python's `match-case` statement for this.
+The class has the following methods:
 
-The `generate_correct_letter_prompt`, `generate_present_letter_prompt`, and `generate_absent_letter_prompt` methods generate prompts based on the current game state. They use the global state of the game to generate specific prompts about the correct, present, and absent letters.
+1. `_generate_position_text(position)`: This static method takes a position (an integer) as input and returns a string representing the ordinal form of the position (e.g., "first", "second", etc.).
 
-The `generate_llm_prompt` method is the main method that generates the full prompt for the game. It first updates the candidate words. If there are no candidate words, it returns `None`. Otherwise, it generates the prompts for correct, present, and absent letters. If the number of candidate words is greater than `MAX_SIZE` (500), it randomly selects `MAX_SIZE` words from the candidate words. It then writes the full prompt to a file.
+2. `generate_correct_letter_prompt()`: This method generates a prompt for the user based on the correct letters and their positions. It constructs a string that lists the correct letters and their positions in the word. If there are no correct letters, an empty string is returned.
 
-The full prompt includes a brief description of the game, the prompts for correct, present, and absent letters, a request to select a word from the list, and the list of candidate words. The prompt is written to a file with a name like `prompts_001.txt`, `prompts_002.txt`, etc. The file count is stored in `self.dump_file_count` and is incremented each time a new prompt is generated.
+3. `generate_present_letter_prompt()`: This method generates a prompt for the user based on the present letters and their positions. It constructs a string that lists the present letters and their positions in the word. If there are no present letters, an empty string is returned.
+
+4. `generate_absent_letter_prompt()`: This method generates a prompt for the user based on the absent letters. It constructs a string that lists the absent letters. If there are no absent letters, an empty string is returned.
+
+5. `generate_llm_prompt()`: This method generates a prompt for the LLM based on the current state of the game. It first updates the candidate_words list. If the list is empty, it returns None. Otherwise, it generates prompts for correct, absent, and present letters. It then constructs a list of candidate words. If the list is too long, it randomly samples a subset of the words. The prompts and the list of candidate words are written to a file.
+
+#### `OpenAIInterace`
+
+Class `OpenAIInterface` provides an interface with the OpenAI API. 
+
+The class has two attributes:
+1. `api_key_file`: The location of a JSON file containing the API key.
+2. `model`: The specific model to use, defaulting to "gpt-4".
+
+The class has two methods:
+1. `__init__(self, api_key_file, model="gpt-4")`: This is the constructor method that initializes the `OpenAIInterface` with the API key and the model. It reads the API key from the provided JSON file and initializes an `OpenAI` client with the API key. It also sets the model to use.
+
+2. `chat(self, prompt)`: This method invokes the chat API with a given prompt and returns the contents to the caller. It creates a chat completion with the model, a system message saying "You are a helpful assistant to solve the Wordle puzzle.", and a user message containing the provided prompt. It sets the temperature to 0.1, the maximum number of tokens to 4096, the top_p to 1, and both the frequency penalty and presence penalty to 0. It then returns the content of the first choice from the response.
