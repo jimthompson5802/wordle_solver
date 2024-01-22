@@ -291,14 +291,13 @@ class WordListGeneratorLLM(WordListGeneratorBase):
         """
         Generates a prompt for the Language Model (LLM) based on the current state of the game.
 
-        This method first updates the candidate_words list. If the list is empty, it returns None. Otherwise, 
-        it generates prompts for correct, absent, and present letters. It then constructs a list of 
-        candidate words. If the list is too long, it randomly samples a subset of the words. The prompts 
-        and the list of candidate words are written to a file.
+        This method first updates the candidate_words list. If the list is empty, it returns None. 
+        Otherwise, it generates prompts for correct, absent, and present letters. It then constructs 
+        a list of candidate words. If the list is too long, it randomly samples a subset of 
+        the words. The prompts and the list of candidate words are written to a file.
 
         Returns:
-            None if the candidate_words list is empty. Otherwise, it doesn't return anything but writes 
-            the prompts and the list of candidate words to a file.
+            str or None: A string that contains the generated prompt, or None if the candidate_words list is empty.
         """
 
         self.update_candidate_words(dump_candidates=False)
@@ -355,10 +354,14 @@ class OpenAIInterface:
         """
         Initializes the OpenAIInterface with the API key and the model.
 
+        This method reads the API key from the provided JSON file and initializes an OpenAI client with the API key. 
+        It also sets the model to use.
+
         Args:
             api_key_file (str): The location of a JSON file with the API key.
-            model (str): The specific model to use.
+            model (str, optional): The specific model to use. Defaults to "gpt-4".
         """
+
         with open(api_key_file) as file:
             api_key = json.load(file)["key"]
         self.openai_client = OpenAI(api_key=api_key)
