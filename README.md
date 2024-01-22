@@ -105,6 +105,11 @@ ankle
 
 Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat.
 
+#### Current Limiations
+* Requires manual interaction with the NYT website.
+* Requires manual interaction with the OpenAI Playground Chat.
+* Manual work-around required if recommended word is not part of the NYT word list.
+
 ### `src/random_solver.py`
 
 Used to test Random Solver with local WordleJudge Simulator.
