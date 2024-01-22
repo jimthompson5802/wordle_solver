@@ -7,7 +7,7 @@ from wordle_judge import WordleJudge
 def main():
     parser = argparse.ArgumentParser(description='Process some inputs.')
     parser.add_argument('word', type=str, help='A 5-letter word')
-    parser.add_argument('--api', type=bool, default=False, help='A boolean flag for api')
+    parser.add_argument('--api', action='store_true', help='A boolean flag for api')
 
     args = parser.parse_args()
 
