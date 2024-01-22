@@ -1,6 +1,10 @@
-from abc import ABC
+
+import json
 import random
 import re
+
+from openai import OpenAI
+
 
 class WordListGeneratorBase:
     """
@@ -314,22 +318,78 @@ class WordListGeneratorLLM(WordListGeneratorBase):
                 # otherwise, just the whole list for the prompt
                 candidate_word_list = '\n'.join(self.candidate_words)
 
+            generated_prompt = (
+                "Solve the puzzle by guessing a five-letter word using these clues.\n"
+                + prompt_correct_letters
+                + prompt_present_letters 
+                + prompt_absent_letters
+                + "If more than one word meets the criteria, select the word that is more common. "
+                + "Provide step-by-step instructions for how you arrived at the selected word. "
+                + "When writing the instructions, do not list words. "
+                + "Return only a json structure with the key 'recommendation' for the recommended word "
+                + "and 'explanation' for your explantion.\n"
+                + "List of candidate words:\n"
+                + candidate_word_list
+            )
+
             self.dump_file_count += 1
             with open(f"data/prompts_{self.dump_file_count:03}.txt", 'w') as file:
-                file.write(
-                    # "You are a virutal assistant that will help solve the Wordle puzzle. "
-                    "Solve the puzzle by guessing a five-letter word using these clues.\n"
-                    + prompt_correct_letters
-                    + prompt_present_letters 
-                    + prompt_absent_letters
-                    + "If more than one word meets the criteria, select the word that is more common. "
-                    + "Provide step-by-step instructions for how you arrived at the selected word. "
-                    + "When writing the instructions, do not list words. "
-                    + "Return only a json structure with the key 'recommendation' for the recommended word "
-                    + "and 'explanation' for your explantion.\n"
-                    + "List of candidate words:\n"
-                    + candidate_word_list
-                )
+                file.write(generated_prompt)
+
+            return generated_prompt
 
 
 
+class OpenAIInterface:
+    """
+    A class used to interface with the OpenAI API.
+
+    This class provides a method to invoke the chat API with a given prompt and return the contents to the caller.
+
+    Attributes:
+        api_key_file (str): The location of a JSON file with the API key.
+        model (str): The specific model to use.
+    """
+
+    def __init__(self, api_key_file, model="gpt-4"):
+        """
+        Initializes the OpenAIInterface with the API key and the model.
+
+        Args:
+            api_key_file (str): The location of a JSON file with the API key.
+            model (str): The specific model to use.
+        """
+        with open(api_key_file) as file:
+            api_key = json.load(file)["key"]
+        self.openai_client = OpenAI(api_key=api_key)
+        self.model = model
+
+    def chat(self, prompt):
+        """
+        Invokes the chat API with a given prompt and returns the contents to the caller.
+
+        Args:
+            prompt (str): The prompt to use.
+
+        Returns:
+            dict: The contents returned by the chat API.
+        """
+        response = self.openai_client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant to solve the Wordle puzzle."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0.1,
+            max_tokens=4096,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        return response.choices[0].message.content

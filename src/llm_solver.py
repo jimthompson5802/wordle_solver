@@ -1,6 +1,7 @@
 import argparse
+import json
 
-from wordle_solver import WordListGeneratorLLM
+from wordle_solver import WordListGeneratorLLM, OpenAIInterface
 from wordle_judge import WordleJudge
 
 def main():
@@ -27,6 +28,9 @@ def main():
     word_list = WordListGeneratorLLM("data/five-letter-words.txt")
     word_list.load()
 
+    # Create an OpenAIInterface object
+    openai_interface = OpenAIInterface("/openai/api_key.json")
+
     # create initial guess
     word = "adieu"
     result = False
@@ -49,8 +53,12 @@ def main():
             word_list.update_state(result)
             word_list.print_state()
             
-            word_list.generate_llm_prompt()
-            word = input("Enter a word: ")
+            generated_prompt = word_list.generate_llm_prompt()
+            if api:
+                llm_response = json.loads(openai_interface.chat(generated_prompt))
+                word = llm_response["recommendation"]
+            else:
+                word = input("Enter a word: ")
             if word is None:
                 print(">>>>No candidate words left")
                 break
