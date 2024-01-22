@@ -201,6 +201,27 @@ Here's a breakdown of what the code does:
 
 The `create_correct_result`, `create_present_result`, and `create_absent_result` functions are helper functions that ask the user to input the correct, present, and absent letter patterns, respectively. These patterns are used to update the state of the `WordListGeneratorLLM` object.
 
+The enter the results from the NYT website for a guess, the user will be provided these input prompts:
+
+#### Enter correct letter pattern:
+When prompted with **Enter correct letter pattern: **, you should enter a 5-letter pattern that represents the correct letters in their correct positions in the word.  
+
+Use a period (.) for any position where the letter is not correct.
+
+For example, if the correct word is "apple" and you have guessed "apply", you would enter "appl." (without the quotes) because the first four letters are correct and in their correct positions, but the last letter is not.
+
+#### Enter present letter pattern:
+When prompted with **Enter present letter pattern: **, you should enter a 5-letter pattern that represents the letters in the word that are correct but not in the correct position.
+
+Use a period (.) for any position where the letter is not present or is in the correct position.
+
+For example, if the correct word is "apple" and you have guessed "pepla", you would enter "..ple" (without the quotes) because the last three letters are present in the word but not in the correct positions, and the first two letters are not present or are in the correct position.
+
+#### Enter absent letter pattern:
+When prompted with **Enter absent letter pattern: **, you should enter the letters that are absent from the word.
+
+For example, if the correct word is "apple" and you have guessed "fable", you would enter "fb" (without the quotes) because 'f' and 'b' are not in "apple".
+
 #### Current Limiations
 * Requires manual interaction with the NYT website.
 * Requires manual interaction with the OpenAI Playground Chat if not using the `--api` option.
