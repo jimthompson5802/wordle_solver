@@ -38,12 +38,12 @@ def main():
     while not isinstance(result, bool) or not result:
         attemp_count += 1
         if attemp_count < 7:
-            print(f'attempt {attemp_count} guess is {word}')
+            print(f'\nAttempt {attemp_count} guess is {word}')
         else:
-            print(f'>>>>Failed wordle game: attempt {attemp_count} guess is {word}')
+            print(f'\n>>>>Exceed wordle game limit: attempt {attemp_count} guess is {word}')
 
         if attemp_count > 20:
-            print(f'>>>>Exceed max attempt: attempt {attemp_count}')
+            print(f'\n>>>>Exceed max attempt: attempt {attemp_count} aborting...')
             break
 
         result = wordle_game.judge_guess(word)
@@ -58,9 +58,10 @@ def main():
                 llm_response = json.loads(openai_interface.chat(generated_prompt))
                 word = llm_response["recommendation"]
             else:
+                print("\nCopy and paste the following prompt to OpenAI Playground and enter the recommendation")
                 word = input("Enter a word: ")
             if word is None:
-                print(">>>>No candidate words left")
+                print("\n>>>>No candidate words left")
                 break
     
     print(f"global_state: {word_list.global_state}")
