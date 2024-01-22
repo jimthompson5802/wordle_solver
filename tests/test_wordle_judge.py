@@ -17,7 +17,7 @@ def test_judge_guess_incorrect():
     judge = WordleJudge('apple')
     result = judge.judge_guess('alloy')
     print(result)
-    assert result == {"present": ['l'], "correct":  [(0, 'a')], "absent": ['o', 'y']}
+    assert result == {"present": [(1, 'l'), (2, 'l')], "correct":  [(0, 'a')], "absent": ['o', 'y']}
 
 def test_judge_guess_case_insensitive():
     random.seed(0)
