@@ -48,7 +48,7 @@ vscode ➜ /workspaces/wordle_solver (main) $
 
 #### Sample run with LLM
 ```
-$ python src/llm_solver.py apple --api True
+$ python src/llm_solver.py apple --api
 Word: apple, API: True
 
 Attempt 1 guess is adieu
