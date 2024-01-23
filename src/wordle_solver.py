@@ -285,7 +285,7 @@ class WordListGeneratorLLM(WordListGeneratorBase):
         if len(prompt_specifics) == 0:
             return ""
         else:
-            return "Words that do not contain these letters: " + prompt_specifics + ".\n"
+            return "Remove words from consideration that contain these letters: " + prompt_specifics + ".\n"
 
     def generate_llm_prompt(self):
         """
@@ -319,9 +319,9 @@ class WordListGeneratorLLM(WordListGeneratorBase):
 
             generated_prompt = (
                 "Solve the puzzle by guessing a five-letter word using these clues.\n"
+                + prompt_absent_letters
                 + prompt_correct_letters
                 + prompt_present_letters 
-                + prompt_absent_letters
                 + "If more than one word meets the criteria, select the word that is more common. "
                 + "Provide step-by-step instructions for how you arrived at the selected word. "
                 + "When writing the instructions, do not list words. "
