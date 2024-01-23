@@ -256,7 +256,7 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             tuple_list = list(self.global_state["present"])
             tuple_list.sort(key=lambda x: x[0])
             prompt_specifics =  ", ".join(
-                [f" '{letter}' should not be in the {self._generate_position_text(position)} position" for position, letter in tuple_list]
+                [f" '{letter}' must not be in the {self._generate_position_text(position)} position" for position, letter in tuple_list]
             )
 
         if len(prompt_specifics) == 0:
