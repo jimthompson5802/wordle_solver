@@ -1,4 +1,4 @@
-# WORDLE Solver Virtual Assistant Testbed
+# WORDLE Solver Virtual Assistant (WSVA) Testbed
 
 Testbed to automate the solving of WORDLE puzzles.
 
