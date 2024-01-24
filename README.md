@@ -1,4 +1,4 @@
-# WORDLE Solver Testbed
+# WORDLE Solver Virtual Assistant Testbed
 
 Testbed to automate the solving of WORDLE puzzles.
 
