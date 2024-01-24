@@ -312,10 +312,11 @@ class WordListGeneratorLLM(WordListGeneratorBase):
 
             if len(self.candidate_words) > self.MAX_SIZE:
                 # hueristic: if the candidate word list is too long and will exceed the LLM token limit
-                 candidate_word_list = '\n'.join(random.sample(self.candidate_words, self.MAX_SIZE))
+                 candidate_word_list = '\n'.join(sorted(random.sample(self.candidate_words, self.MAX_SIZE)))
             else:
                 # otherwise, just the whole list for the prompt
-                candidate_word_list = '\n'.join(self.candidate_words)
+                candidate_word_list = '\n'.join(sorted(self.candidate_words))
+
 
             generated_prompt = (
                 "Solve the puzzle by guessing a five-letter word using these clues.\n"
