@@ -2,7 +2,7 @@
 
 Testbed to automate the solving of WORDLE puzzles.
 
-The list of 5-letter words used in the Wordle Solver sourced from https://github.com/dwyl/english-words
+The list of 5-letter words used in the Wordle Solver Virual Assistant is sourced from https://github.com/dwyl/english-words.  The file `data/five-letter-words.txt` is an extract of only five-letter words from the file `words_alpha.txt` in the `english-words` GitHub repository.
 
 GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the OpenAI Playground Chat and API access is supported.  Using these parameters:
 * temperature=0.1
