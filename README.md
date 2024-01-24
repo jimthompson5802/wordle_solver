@@ -89,36 +89,22 @@ global_state: {'present': {(3, 'e')}, 'correct': {(0, 'a')}, 'absent': {'c', 'd'
 #### Example Prompt for LLM
 ``` 
 Solve the puzzle by guessing a five-letter word using these clues.
-Words must contain these letters in the following positions: 'a' in the first.
-Words must contain these letters with the position restrictions:  'e' should not be in the fourth position.
-Words that do not contain these letters:  'c',  'd',  'r',  'i',  't',  'u',  'o'.
-If more than one word meets the criteria, select the word that is more common. Provide step-by-step instructions for how you arrived at the selected word. When writing the instructions, do not list words. Return only a json structure with the key 'recommendation' for the recommended word and 'explanation' for your explantion.
+Remove words from consideration that contain these letters:  'c',  'u',  'h',  'n',  's',  'd',  
+'i',  'p',  'l',  't'.
+Words must contain these letters in the following positions: 'e' in the second, 'a' in the fifth.
+Words must contain these letters with the position restrictions:  'a' must not be in the first position,  
+'e' must not be in the third position,  'r' must not be in the third position,  
+'a' must not be in the third position,  'e' must not be in the fourth position.
+If more than one word meets the criteria, select the word that is more common. Provide step-by-step 
+instructions for how you arrived at the selected word. When writing the instructions, do not list words. 
+Return only a json structure with the key 'recommendation' for the recommended word and 'explanation' 
+for your explantion.
 List of candidate words:
-avena
-apple
-amass
-abase
-amang
-alans
-abamp
-alvan
-amaas
-awane
-ambas
-amman
-algal
-ameba
-anana
-avell
-allan
-aheap
-apeak
-aveny
-azans
-asaph
-awave
-asana
-ankle
+bemba
+gemma
+regga
+regma
+zebra
 ```
 
 #### Sample run using ChatGPT interface by uploading the prompt file
