@@ -73,6 +73,7 @@ def main():
         if api:
             llm_response = json.loads(openai_interface.chat(generated_prompt))
             word = llm_response["recommendation"]
+            print(f"WSVA recommendation: {word} from list:\n{word_list.prompt_word_list}")
         else:
             print("\nCopy and paste the prompt file to OpenAI Playground and enter the recommendation")
             word = input("Enter a word: ")
