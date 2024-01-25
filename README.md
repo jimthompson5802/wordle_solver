@@ -173,19 +173,23 @@ Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the Op
 
 Here's a breakdown of what the code does:
 
-1. It first sets up an argument parser to accept a boolean flag `--api` from the command line.  If set, it indicates to use the OpenAI Chat API to automatically send the prompt and receive the recommendation.  If not set, it indicates to use the OpenAI Playground Chat to manually send the prompt and receive the recommendation.
+1. It starts by parsing command-line arguments. The `--api` flag is used to determine whether to use the OpenAI API for generating guesses.
 
-2. It creates a `WordListGeneratorLLM` object with a list of five-letter words. This object will be used to generate candidate words for the game.
+2. It creates a `WordListGeneratorLLM` object, which is used to manage the list of possible words, and an `OpenAIInterface` object, which is used to interact with the OpenAI API.
 
-3. It creates an `OpenAIInterface` object with the OpenAI API key. This object will be used to interact with the OpenAI API.
+3. It enters a loop where it makes up to 7 attempts to guess the word. For each attempt, it does the following:
 
-4. It then enters a loop where it makes guesses at the word. The initial guess is "adieu". If the guess is correct, the loop ends. If the guess is incorrect, the `WordListGeneratorLLM` object updates its state based on the result and generates a new prompt. If the `--api` flag is set, the script sends the prompt to the OpenAI API and uses the response as the next guess. If the `--api` flag is not set, the script asks the user to manually enter the next guess.
+   - It prompts the user to enter the feedback from the Wordle game for the previous guess. The feedback is a string where each character represents the feedback for the corresponding letter in the guess (e.g., "g" for a correct letter in the correct position, "y" for a correct letter in the wrong position, "." for an incorrect letter).
 
-5. The loop continues until a correct guess is made or the maximum number of attempts is reached.
+   - It processes the feedback and updates the state of the word list accordingly.
 
-6. Finally, it prints the global state of the `WordListGeneratorLLM` object.
+   - It generates a new prompt for the language model based on the current state of the word list.
 
-The `create_correct_result`, `create_present_result`, and `create_absent_result` functions are helper functions that ask the user to input the correct, present, and absent letter patterns, respectively. These patterns are used to update the state of the `WordListGeneratorLLM` object.
+   - If the `--api` flag is set, it sends the prompt to the OpenAI API and uses the recommended word for the next guess. Otherwise, it prompts the user to manually enter the next guess.
+
+   - If no word was entered or recommended, it aborts the game.
+
+4. The script continues this loop until it has made 7 attempts or the game is aborted. At the end of each attempt, it prints the current state of the word list and the global state.
 
 #### Enter guess:
 The user can either accept the recommended word or type in an alterative word.
