@@ -69,7 +69,9 @@ def main():
             elif feedback == ".":
                 # Check if the letter is not already in the "correct" or "present" lists
                 if (letter not in [x[1] for x in result["correct"]] and 
-                    letter not in [x[1] for x in result["present"]]):
+                    letter not in [x[1] for x in result["present"]] and
+                    not word_list.is_letter_in_correct(letter) and
+                    not word_list.is_letter_in_present(letter)):
                     # Add the letter to the "absent" list
                     result["absent"].append(letter)
             # If the feedback is anything else, it's unknown and we exit the program
@@ -95,10 +97,25 @@ def main():
             llm_response = json.loads(openai_interface.chat(generated_prompt))
 
             # Extract the recommended word from the response
-            word = llm_response["recommendation"]
+            recommended_word = llm_response["recommendation"]
 
             # Print the recommended word and the list of prompt words
-            print(f"WSVA recommendation: '{word}' from list:\n{word_list.prompt_word_list}")
+            print(f"WSVA recommendation: '{recommended_word}' from list:\n{word_list.prompt_word_list}")
+
+            # Have user confirm use of the recommended word or enter another word
+            input_ok = "n"
+            while input_ok == "n":
+                input_ok = input(f"\nUse recommended word '{recommended_word}'? (y/n)")
+
+                if input_ok == "y":
+                    word = recommended_word
+                    break
+                else:
+                    while input_ok == "n":
+                        word = input("What word should be used?: ")
+
+                        # Ask the user to confirm the response is correct
+                        input_ok = input(f"Is this correct: '{word}'? (y/n)")
 
         # If the API flag is not set, ask the user to manually enter a word
         else:
