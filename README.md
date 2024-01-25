@@ -198,6 +198,8 @@ Enter "y" for any letter that is correct but not in the correct position.
 
 Enter a period (.) for a letter that is not in the word.
 
+After entering the five letter response pattern, press the Enter key.  You'll be prompted to confirm the correct response pattern was entered.  If it is correct, enter "y" and press the Enter key.  If it is not correct, enter "n" and press the Enter key.  If you enter "n", you'll be prompted to re-enter the response pattern.
+
 Here are some example responses:
 
 If the correct word is "apple" and you have guessed "apply", you would enter "gggg." (without the quotes) because the first four letters are in the correct position and the last letter 'y' is not in the word.
