@@ -187,26 +187,24 @@ Here's a breakdown of what the code does:
 
 The `create_correct_result`, `create_present_result`, and `create_absent_result` functions are helper functions that ask the user to input the correct, present, and absent letter patterns, respectively. These patterns are used to update the state of the `WordListGeneratorLLM` object.
 
-The enter the results from the NYT website for a guess, the user will be provided these input prompts:
+The enter the results from the NYT website for a guess, the user will be provided this input prompt:
 
-#### Enter correct letter pattern:
-When prompted with "Enter correct letter pattern: ", you should enter a 5-letter pattern that represents the correct letters in their correct positions in the word.  
+#### Enter wordle response:
+When prompted with "Enter wordle response: ", you should enter a 5-letter feedback from Wordle.
 
-Use a period (.) for any position where the letter is not correct.
+Enter "g" for any letter that is correct and in the correct position.
 
-For example, if the correct word is "apple" and you have guessed "apply", you would enter "appl." (without the quotes) because the first four letters are correct and in their correct positions, but the last letter is not.
+Enter "y" for any letter that is correct but not in the correct position.
 
-#### Enter present letter pattern:
-When prompted with "Enter present letter pattern: ", you should enter a 5-letter pattern that represents the letters in the word that are correct but not in the correct position.
+Enter a period (.) for a letter that is not in the word.
 
-Use a period (.) for any position where the letter is not present or is in the correct position.
+Here are some example responses:
 
-For example, if the correct word is "apple" and you have guessed "pepla", you would enter "pe..a" (without the quotes) because the three letters are present in the word but not in the correct positions.
+If the correct word is "apple" and you have guessed "apply", you would enter "gggg." (without the quotes) because the first four letters are in the correct position and the last letter 'y' is not in the word.
 
-#### Enter absent letter pattern:
-When prompted with "Enter absent letter pattern: ", you should enter the letters that are absent from the word.
+If the correct word is "apple" and you have guessed "pepla", you would enter "yyygy" (without the quotes) because the first three letters and fifth letter are in the word but in the wrong postion.  The fourth letter is in the correct position.
 
-For example, if the correct word is "apple" and you have guessed "fable", you would enter "fb" (without the quotes) because 'f' and 'b' are not in "apple".
+For example, if the correct word is "apple" and you have guessed "fable", you would enter ".y.gg" (without the quotes) because 'f' and 'b' are not in "apple" and 'l' and 'e' are in the correct postion and 'a' is in the word but in the wrong position.
 
 #### Current Limiations
 * Requires manual interaction with the NYT website.
