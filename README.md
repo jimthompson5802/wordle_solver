@@ -187,6 +187,13 @@ Here's a breakdown of what the code does:
 
 The `create_correct_result`, `create_present_result`, and `create_absent_result` functions are helper functions that ask the user to input the correct, present, and absent letter patterns, respectively. These patterns are used to update the state of the `WordListGeneratorLLM` object.
 
+#### Enter guess:
+The user can either accept the recommended word or type in an alterative word.
+
+If the user wants to use the recommened word, they should enter "y" and press the Enter key to this prompt "Use recommended word 'xxxxx'? (y/n)", where "xxxxx" is the recommended word. 
+
+If the want to use an alternative word, they should enter "n" and press the Enter key.  If they enter "n", they'll be prompted to enter the alternative word: "What word should be used?: ".  After entering the alternative word, they'll be prompted to confirm the alternative word is correct: "Is this correct: 'wwwww'? (y/n)", where "wwwww" is the alternative word.  If it is correct, enter "y" and press the Enter key.  If it is not correct, enter "n" and press the Enter key.  If you enter "n", you'll be prompted to re-enter the alternative word.
+
 The enter the results from the NYT website for a guess, the user will be provided this input prompt:
 
 #### Enter wordle response:
@@ -207,6 +214,87 @@ If the correct word is "apple" and you have guessed "apply", you would enter "gg
 If the correct word is "apple" and you have guessed "pepla", you would enter "yyygy" (without the quotes) because the first three letters and fifth letter are in the word but in the wrong postion.  The fourth letter is in the correct position.
 
 For example, if the correct word is "apple" and you have guessed "fable", you would enter ".y.gg" (without the quotes) because 'f' and 'b' are not in "apple" and 'l' and 'e' are in the correct postion and 'a' is in the word but in the wrong position.
+
+#### Example run
+``` 
+attempt 1 word is adieu
+Enter wordle response: ....
+Is this correct: '....'? (y/n)y
+The result is {'correct': [], 'present': [], 'absent': ['a', 'd', 'i', 'e']}
+global_state: {'present': set(), 'correct': set(), 'absent': {'d', 'i', 'e', 'a'}}
+before_size: 15920, after_size: 2006
+WSVA recommendation: 'coyly' from list:
+botry
+cohow
+coyly
+coyos
+cunts
+cusps
+fount
+ghyll
+klong
+kumyk
+lochy
+mucky
+myrrh
+plugs
+pokom
+showy
+snugs
+solon
+spock
+stunk
+swoun
+syrus
+tubby
+wolfs
+zokor
+
+Use recommended word 'coyly'? (y/n)n
+What word should be used?: spock
+Is this correct: 'spock'? (y/n)y
+global_state: {'present': set(), 'correct': set(), 'absent': {'d', 'i', 'e', 'a'}}
+
+attempt 2 word is spock
+Enter wordle response: gy...
+Is this correct: 'gy...'? (y/n)y
+The result is {'correct': [(0, 's')], 'present': [(1, 'p')], 'absent': ['o', 'c', 'k']}
+global_state: {'present': {(1, 'p')}, 'correct': {(0, 's')}, 'absent': {'o', 'd', 'c', 'e', 'k', 'i', 'a'}}
+before_size: 2006, after_size: 74
+WSVA recommendation: 'stunt' from list:
+shuff
+shuns
+shunt
+shuts
+slump
+slurp
+smrgs
+snubs
+snuff
+snurl
+strub
+stuff
+stulm
+stuns
+stunt
+sturt
+stymy
+subst
+sully
+sumps
+sumpt
+suppl
+swung
+sylph
+syrus
+
+Use recommended word 'stunt'? (y/n)y
+global_state: {'present': {(1, 'p')}, 'correct': {(0, 's')}, 'absent': {'o', 'd', 'c', 'e', 'k', 'i', 'a'}}
+
+attempt 3 word is stunt
+Enter wordle response: 
+```
+
 
 #### Current Limiations
 * Requires manual interaction with the NYT website.
