@@ -31,6 +31,30 @@ class WordListGeneratorBase:
         }
         self.dump_file_count = 0
 
+    def is_letter_in_present(self, letter):
+        """
+        Checks if a letter is in the present list.
+
+        Args:
+            letter (str): The letter to check.
+
+        Returns:
+            bool: True if the letter is in the present list, False otherwise.
+        """
+        return letter in [x[1] for x in self.global_state["present"]]
+    
+    def is_letter_in_correct(self, letter):
+        """
+        Checks if a letter is in the correct list.
+
+        Args:
+            letter (str): The letter to check.
+
+        Returns:
+            bool: True if the letter is in the correct list, False otherwise.
+        """
+        return letter in [x[1] for x in self.global_state["correct"]]
+
     def load(self):
         """
         Load words from a file into the candidate_words list.
