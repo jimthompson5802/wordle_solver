@@ -256,13 +256,13 @@ class WordListGeneratorLLM(WordListGeneratorBase):
         else:
             tuple_list = list(self.global_state["correct"])
             tuple_list.sort(key=lambda x: x[0])
-            prompt_specifics =  ", ".join(
-                [f"'{letter}' in the {self._generate_position_text(position)}"  for position, letter in tuple_list]
+            prompt_specifics =  "\n".join(
+                [f"Words must contain '{letter}' in the {self._generate_position_text(position)} position."  for position, letter in tuple_list]
             )
         if len(prompt_specifics) == 0:
             return ""
         else:
-            return "Words must contain these letters in the following positions: " + prompt_specifics + ".\n"
+            return prompt_specifics
 
     def generate_present_letter_prompt(self):
         """
@@ -279,37 +279,14 @@ class WordListGeneratorLLM(WordListGeneratorBase):
         else:
             tuple_list = list(self.global_state["present"])
             tuple_list.sort(key=lambda x: x[0])
-            prompt_specifics =  ", ".join(
-                [f" '{letter}' must not be in the {self._generate_position_text(position)} position" for position, letter in tuple_list]
+            prompt_specifics =  "\n".join(
+                [f"Words must not contain the '{letter}' in the {self._generate_position_text(position)} position." for position, letter in tuple_list]
             )
 
         if len(prompt_specifics) == 0:
             return ""
         else:
-            return "Words must contain these letters with the position restrictions: " + prompt_specifics + ".\n"
-
-    def generate_absent_letter_prompt(self):
-        """
-        Generates a prompt for the user based on the absent letters.
-
-        This method constructs a string that lists the absent letters. If there are no absent letters, 
-        an empty string is returned.
-
-        Returns:
-            str: A string that lists the absent letters, or an empty string if there are no absent letters.
-        """
-
-        if len(self.global_state["absent"]) == 0:
-            prompt_specifics = ""
-        else:
-            prompt_specifics =  ", ".join(
-                [f" '{letter}'" for letter in self.global_state["absent"]]
-            )
-
-        if len(prompt_specifics) == 0:
-            return ""
-        else:
-            return "Remove words from consideration that contain these letters: " + prompt_specifics + ".\n"
+            return prompt_specifics
 
     def generate_llm_prompt(self):
         """
@@ -331,7 +308,6 @@ class WordListGeneratorLLM(WordListGeneratorBase):
         else:
             # generate prompt for LLM
             prompt_correct_letters = self.generate_correct_letter_prompt()
-            prompt_absent_letters = self.generate_absent_letter_prompt()
             prompt_present_letters = self.generate_present_letter_prompt()
 
             if len(self.candidate_words) > self.MAX_SIZE:
@@ -344,10 +320,9 @@ class WordListGeneratorLLM(WordListGeneratorBase):
 
             generated_prompt = (
                 "Solve the puzzle by guessing a five-letter word using these clues.\n"
-                + prompt_absent_letters
                 + prompt_correct_letters
-                + prompt_present_letters 
-                + "If more than one word meets the criteria, select the word that is more common. "
+                + "\n" + prompt_present_letters 
+                + "\nIf more than one word meets the criteria, select the word that is more common. "
                 + "Provide step-by-step instructions for how you arrived at the selected word. "
                 + "When writing the instructions, do not list words. "
                 + "Return only a json structure with the key 'recommendation' for the recommended word "
