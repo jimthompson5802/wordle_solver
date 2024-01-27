@@ -470,3 +470,50 @@ The class has two methods:
 1. `__init__(self, api_key_file, model="gpt-4")`: This is the constructor method that initializes the `OpenAIInterface` with the API key and the model. It reads the API key from the provided JSON file and initializes an `OpenAI` client with the API key. It also sets the model to use.
 
 2. `chat(self, prompt)`: This method invokes the chat API with a given prompt and returns the contents to the caller. It creates a chat completion with the model, a system message saying "You are a helpful assistant to solve the Wordle puzzle.", and a user message containing the provided prompt. It sets the temperature to 0.1, the maximum number of tokens to 4096, the top_p to 1, and both the frequency penalty and presence penalty to 0. It then returns the content of the first choice from the response.
+
+## Observations:
+
+Example of LLM hallucinating on the explanation.  
+
+**Prompt**:
+``` 
+Solve the puzzle by guessing a five-letter word using these clues.
+
+If more than one word meets the criteria, select the word that is more common. Provide step-by-step instructions for how you arrived at the selected word. When writing the instructions, do not list words. Return only a json structure with the key 'recommendation' for the recommended word and 'explanation' for your explantion.
+List of candidate words:
+biddy
+butin
+didus
+dungs
+filly
+flogs
+flook
+gibby
+gully
+gusty
+hondo
+immun
+josip
+jotty
+judos
+lusts
+mommy
+nobut
+nould
+numud
+shots
+sifts
+sugis
+undid
+uninn
+```
+
+**LLM Response**:
+
+```json
+{
+   "recommendation": "gusty", 
+   "explanation": "The first step is to eliminate words that have repeating letters, as Wordle only uses words with unique letters. This eliminates 'biddy', 'didus', 'filly', 'flogs', 'gibby', 'mommy', 'nobut', 'nould', 'numud', 'shots', 'sifts', 'sugis', and 'undid'. The next step is to eliminate words that contain less common letters, such as 'j', 'z', 'x', 'q', and 'v'. This eliminates 'josip' and 'jotty'. The remaining words are 'butin', 'dungs', 'flook', 'gully', 'gusty', 'hondo', 'judos', 'lusts', and 'uninn'. Among these, 'gusty' is the most common word, making it the best guess."
+}
+```
+Repeated letters are allowed in Wordle.
