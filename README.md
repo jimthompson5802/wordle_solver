@@ -9,27 +9,32 @@ GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the 
 * max_tokens=4096
 
 ## Core Modules
+
 ### `src/llm_solver.py`  
 
 Used to test LLM with local WordleJudge Simulator.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat or API.
 
-Here's a breakdown of what the code does:
+This Python script is a command-line interface for playing the Wordle game using a Language Model (LLM) to generate guesses. Here's a breakdown of what the script does:
 
-1. It first sets up an argument parser to accept a 5-letter word and a boolean flag `--api` from the command line.
+1. **Imports necessary modules**: The script imports several Python standard library modules (`argparse`, `json`, `random`) and two custom modules (`WordListGeneratorLLM`, `OpenAIInterface`, `WordleJudge`).
 
-2. It then validates that the provided word is 5 letters long.
+2. **Defines a list of candidate first words**: The `CANIDATE_FIRST_WORD_LIST` is a list of words that the script can use as the first guess in the Wordle game.
 
-3. It creates a `WordleJudge` object with the provided word. This object will be used to judge the guesses.
+3. **Defines the `main` function**: This function is the main entry point of the script.
 
-4. It creates a `WordListGeneratorLLM` object with a list of five-letter words. This object will be used to generate candidate words for the game.
+   - It first parses command-line arguments using the `argparse` module. The script accepts one required argument `word`, which is the target word for the Wordle game, and one optional argument `--api`, which is a boolean flag indicating whether to use the OpenAI API to generate guesses.
 
-5. It creates an `OpenAIInterface` object with the OpenAI API key. This object will be used to interact with the OpenAI API.
+   - It then creates a `WordleJudge` object, a `WordListGeneratorLLM` object, and an `OpenAIInterface` object. The `WordleJudge` object is used to judge the guesses, the `WordListGeneratorLLM` object is used to generate a list of candidate words for the Wordle game, and the `OpenAIInterface` object is used to interact with the OpenAI API.
 
-6. It then enters a loop where it makes guesses at the word. The initial guess is "adieu". If the guess is correct, the loop ends. If the guess is incorrect, the `WordListGeneratorLLM` object updates its state based on the result and generates a new prompt. If the `--api` flag is set, the script sends the prompt to the OpenAI API and uses the response as the next guess. If the `--api` flag is not set, the script asks the user to manually enter the next guess.
+   - The script then enters a loop where it makes up to 20 attempts to guess the Wordle word. For each attempt, it first selects a word from the candidate word list and then asks the WordleJudge to judge the guess. The WordleJudge returns a string of feedback characters where "g" means the letter is correct and in the correct position, "y" means the letter is correct but in the wrong position, and "." means the letter is not in the word.
 
-7. The loop continues until a correct guess is made or the maximum number of attempts is reached.
+   - The script then updates the state of the `WordListGeneratorLLM` object based on the Wordle response and generates a new prompt for the LLM. If the `--api` flag is set, it sends the prompt to the OpenAI API and uses the recommended word from the API response as the next guess. If the `--api` flag is not set, it asks the user to manually enter the next guess.
 
-8. Finally, it prints the global state of the `WordListGeneratorLLM` object.
+   - The loop continues until the script has made 20 attempts or there are no more candidate words left.
+
+4. **Runs the `main` function**: If the script is run as a standalone program (i.e., not imported as a module), it calls the `main` function to start the Wordle game.
+
+This script provides a way to play the Wordle game using a Language Model to generate guesses, with the option to use the OpenAI API to generate the guesses. It also provides a way for the user to manually enter guesses and Wordle responses.
 
 #### Sample run with copy/paste of prompt to OpenAI Playground
 ```
@@ -169,27 +174,27 @@ global_state: {'present': {(3, 'e'), (3, 'p'), (4, 'a'), (2, 'a'), (2, 'e')}, 'c
 
 ### `src/llm_solver_nyt.py`
 
-Used to play Wordle on the NYT website.  Depends on OpenAI GPT4 model via the OpenAI Playground Chat or API.
+This Python script is a command-line interface for playing the Wordle game using a Language Model (LLM) to generate guesses. Here's a breakdown of what the script does:
 
-Here's a breakdown of what the code does:
+1. **Imports necessary modules**: The script imports several Python standard library modules (`argparse`, `json`, `random`, `sys`) and two custom modules (`WordListGeneratorLLM`, `OpenAIInterface`).
 
-1. It starts by parsing command-line arguments. The `--api` flag is used to determine whether to use the OpenAI API for generating guesses.
+2. **Defines a list of candidate first words**: The `CANIDATE_FIRST_WORD_LIST` is a list of words that the script can use as the first guess in the Wordle game.
 
-2. It creates a `WordListGeneratorLLM` object, which is used to manage the list of possible words, and an `OpenAIInterface` object, which is used to interact with the OpenAI API.
+3. **Defines the `main` function**: This function is the main entry point of the script.
 
-3. It enters a loop where it makes up to 7 attempts to guess the word. For each attempt, it does the following:
+   - It first parses command-line arguments using the `argparse` module. The script accepts one optional argument `--api`, which is a boolean flag indicating whether to use the OpenAI API to generate guesses.
 
-   - It prompts the user to enter the feedback from the Wordle game for the previous guess. The feedback is a string where each character represents the feedback for the corresponding letter in the guess (e.g., "g" for a correct letter in the correct position, "y" for a correct letter in the wrong position, "." for an incorrect letter).
+   - It then creates a `WordListGeneratorLLM` object and an `OpenAIInterface` object. The `WordListGeneratorLLM` object is used to generate a list of candidate words for the Wordle game, and the `OpenAIInterface` object is used to interact with the OpenAI API.
 
-   - It processes the feedback and updates the state of the word list accordingly.
+   - The script then enters a loop where it makes up to 7 attempts to guess the Wordle word. For each attempt, it first selects a word from the candidate word list and then asks the user to enter the Wordle response for that word. The Wordle response is a string of feedback characters where "g" means the letter is correct and in the correct position, "y" means the letter is correct but in the wrong position, and "." means the letter is not in the word.
 
-   - It generates a new prompt for the language model based on the current state of the word list.
+   - The script then updates the state of the `WordListGeneratorLLM` object based on the Wordle response and generates a new prompt for the LLM. If the `--api` flag is set, it sends the prompt to the OpenAI API and uses the recommended word from the API response as the next guess. If the `--api` flag is not set, it asks the user to manually enter the next guess.
 
-   - If the `--api` flag is set, it sends the prompt to the OpenAI API and uses the recommended word for the next guess. Otherwise, it prompts the user to manually enter the next guess.
+   - The loop continues until the script has made 7 attempts or there are no more candidate words left.
 
-   - If no word was entered or recommended, it aborts the game.
+4. **Runs the `main` function**: If the script is run as a standalone program (i.e., not imported as a module), it calls the `main` function to start the Wordle game.
 
-4. The script continues this loop until it has made 7 attempts or the game is aborted. At the end of each attempt, it prints the current state of the word list and the global state.
+This script provides a way to play the Wordle game using a Language Model to generate guesses, with the option to use the OpenAI API to generate the guesses. It also provides a way for the user to manually enter guesses and Wordle responses.
 
 #### Enter guess:
 The user can either accept the recommended word or type in an alterative word.
