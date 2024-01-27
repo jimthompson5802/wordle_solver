@@ -19,8 +19,8 @@ def main():
     print(f"API: {api}")
 
     # Create a WordList object
-    word_list = WordListGeneratorLLM("data/five-letter-words.txt")
-    word_list.load()
+    wordle_virtual_assistant = WordListGeneratorLLM("data/five-letter-words.txt")
+    wordle_virtual_assistant.load()
 
     # Create an OpenAIInterface object
     openai_interface = OpenAIInterface("/openai/api_key.json")
@@ -74,8 +74,8 @@ def main():
                 # Check if the letter is not already in the "correct" or "present" lists
                 if (letter not in [x[1] for x in result["correct"]] and 
                     letter not in [x[1] for x in result["present"]] and
-                    not word_list.is_letter_in_correct(letter) and
-                    not word_list.is_letter_in_present(letter)):
+                    not wordle_virtual_assistant.is_letter_in_correct(letter) and
+                    not wordle_virtual_assistant.is_letter_in_present(letter)):
                     # Add the letter to the "absent" list
                     result["absent"].append(letter)
             # If the feedback is anything else, it's unknown and we exit the program
@@ -86,14 +86,16 @@ def main():
         # Print the result
         print(f'The result is {result}')
 
+        wordle_virtual_assistant.guessed_word = word
+
         # Update the state of the word list with the result of the last guess
-        word_list.update_state(result)
+        wordle_virtual_assistant.update_state(result)
 
         # Print the current state of the word list
-        word_list.print_state()
+        wordle_virtual_assistant.print_state()
 
         # Generate a new prompt for the language model
-        generated_prompt = word_list.generate_llm_prompt()
+        generated_prompt = wordle_virtual_assistant.generate_llm_prompt()
 
         # If the API flag is set, use the OpenAI API to get a response
         if api:
@@ -107,7 +109,7 @@ def main():
             recommended_word = llm_response["recommendation"]
 
             # Print the recommended word and the list of prompt words
-            print(f"WSVA recommendation: '{recommended_word}' from list:\n{word_list.prompt_word_list}")
+            print(f"WSVA recommendation: '{recommended_word}' from list:\n{wordle_virtual_assistant.prompt_word_list}")
 
             # Have user confirm use of the recommended word or enter another word
             input_ok = "n"
@@ -135,7 +137,7 @@ def main():
             break
 
         # Print the final state of the word list
-        print(f"global_state: {word_list.global_state}")    
+        print(f"global_state: {wordle_virtual_assistant.global_state}")    
 
 if __name__ == "__main__":
     main()

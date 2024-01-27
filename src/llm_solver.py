@@ -28,8 +28,8 @@ def main():
     wordle_game = WordleJudge(word)
  
     # Create a WordList object
-    word_list = WordListGeneratorLLM("data/five-letter-words.txt")
-    word_list.load()
+    wordle_virtual_assistant = WordListGeneratorLLM("data/five-letter-words.txt")
+    wordle_virtual_assistant.load()
 
     # Create an OpenAIInterface object
     openai_interface = OpenAIInterface("/openai/api_key.json")
@@ -54,10 +54,11 @@ def main():
         print(f'The result is {result}')
         if not isinstance(result, bool):
             # Update the word list
-            word_list.update_state(result)
-            word_list.print_state()
+            wordle_virtual_assistant.guessed_word = word
+            wordle_virtual_assistant.update_state(result)
+            wordle_virtual_assistant.print_state()
             
-            generated_prompt = word_list.generate_llm_prompt()
+            generated_prompt = wordle_virtual_assistant.generate_llm_prompt()
             if api:
                 llm_response = json.loads(openai_interface.chat(generated_prompt))
                 llm_response_count += 1
@@ -72,7 +73,7 @@ def main():
                 print("\n>>>>No candidate words left")
                 break
     
-    print(f"global_state: {word_list.global_state}")
+    print(f"global_state: {wordle_virtual_assistant.global_state}")
     
 if __name__ == "__main__":
     main()
