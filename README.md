@@ -336,47 +336,122 @@ Class for solvers.  Currently only has a brute force solver is implemented.
 This Python script defines two classes: `WordListGeneratorBase` and `WordListGeneratorRandom`. 
 
 #### `WordListGeneratorBase` 
-An abstract base class that provides a common interface and some shared functionality for generating a list of candidate words in a word guessing game. 
 
-The `__init__` method initializes the object with a file path to a list of words and sets up some initial state. The `load` method reads the words from the file and stores them in the `candidate_words` list. 
+The selected class is `WordListGeneratorBase` in Python. It's a base class used to generate a list of candidate words for the Wordle game. Here's a breakdown of its methods and attributes:
 
-The `_eliminate_words_with_letters` method filters out words that contain any letters in the "absent" set of the global state. It does this by creating a regular expression that matches any of the absent letters and then using a list comprehension to create a new list of words that do not match this regular expression.
+**Attributes:**
 
-The `_generate_regex_for_correct` method generates a regular expression that matches words with the correct letters in the correct positions. It does this by creating a list of "." characters, replacing the ones at the positions of the correct letters with those letters, and then joining the list into a string and adding "^" and "$" to the start and end to match the start and end of the string.
+- `words_fp`: The file path to the file containing the words.
+- `candidate_words`: A list of candidate words for the Wordle game.
+- `global_state`: A dictionary that stores the current state of the Wordle game. It includes "present", "correct", and "absent" letters and their positions.
+- `dump_file_count`: The number of times the `candidate_words` list has been dumped to a file.
 
-The `update_state` method updates the global state with the result of a guess. It does this by iterating over the keys in the result and updating the corresponding sets in the global state.
+**Methods:**
 
-The `get_candidate_words` method is an abstract method, meaning it must be implemented by any subclass of `WordListGeneratorBase`.
+- `__init__(self, words_fp)`: Initializes the class with a file path to load words from.
 
+- `is_letter_in_present(self, letter)`: Checks if a letter is in the "present" list.
+
+- `is_letter_in_correct(self, letter)`: Checks if a letter is in the "correct" list.
+
+- `load(self)`: Loads words from a file into the `candidate_words` list.
+
+- `_eliminate_words_with_absent_letters(self)`: Eliminates words from the `candidate_words` list that contain any of the "absent" letters.
+
+- `_keep_words_with_correct_letters(self)`: Retains only those words in the `candidate_words` list that have "correct" letters in the correct positions.
+
+- `_eliminate_words_with_present_letters(self)`: Eliminates words from the `candidate_words` list that have any of the "present" letters in the correct positions.
+
+- `update_state(self, result)`: Updates the `global_state` dictionary with the new result.
+
+- `print_state(self)`: Prints the current `global_state`.
+
+- `update_candidate_words(self, dump_candidates=False)`: Updates the `candidate_words` list based on the current `global_state`. If `dump_candidates` is `True`, the updated `candidate_words` list is written to a file.
+
+This class provides a base functionality for generating and updating a list of candidate words based on the current game state. It can be extended by other classes to provide different strategies for generating candidate words.
 
 #### `WordListGeneratorRandom` 
-This class overrides the `get_candidate_words` method from the base class. This method is responsible for updating the list of candidate words based on the game's current state and returning a random word from the updated list.
 
-At the start of the method, the size of the current list of candidate words is stored in the `before_size` variable. Then, the `_eliminate_words_with_letters` method is called to remove any words from the list that contain letters known to be absent from the target word. This updated list is stored back in `self.candidate_words`.
+The selected class is `WordListGeneratorRandom` in Python. It's a class used to generate a list of candidate words for the Wordle game. This class inherits from the `WordListGeneratorBase` class and overrides the `get_candidate_word` method to return a random word from the `candidate_words` list.
 
-Next, the `_generate_regex_for_correct` method is called to generate a regular expression that matches words with the correct letters in the correct positions. This regular expression is used to further filter the list of candidate words, keeping only those words that match the regular expression.
+Here's a breakdown of its attributes and methods:
 
-After the list of candidate words has been updated, the size of the list is stored in the `after_size` variable. The sizes before and after the update are printed to the console for debugging purposes.
+**Attributes:**
 
-Finally, if the list of candidate words is empty, the method returns `None`. Otherwise, it returns a random word from the list. This is done using the `random.choice` function from the Python standard library.
+- `candidate_words (list)`: A list of candidate words for the Wordle game. This list is updated based on the current game state and is used to select the next word to guess in the game.
 
-The `_eliminate_words_with_letters` and `_generate_regex_for_correct` methods are defined in the `WordListGeneratorBase` class. The `_eliminate_words_with_letters` method creates a regular expression that matches any of the absent letters and uses it to filter out words from the list of candidate words. The `_generate_regex_for_correct` method creates a regular expression that matches words with the correct letters in the correct positions.
+- `global_state (dict)`: A dictionary that stores the current state of the Wordle game. This state includes information about the letters that are present, correct, and absent in the current word.
+
+- `words_fp (str)`: The file path to the file containing the words. This file is used to load the initial list of candidate words.
+
+- `dump_file_count (int)`: The number of times the `candidate_words` list has been dumped to a file. This is used for debugging and analysis purposes.
+
+**Methods:**
+
+- `get_candidate_word(self, dump_candidates=False)`: This method first updates the `candidate_words` list based on the current `global_state`. If the list is empty after the update, it returns `None`. Otherwise, it returns a random word from the list. If `dump_candidates` is `True`, the updated `candidate_words` list is written to a file. This method provides the main functionality of the class, which is to select the next word to guess in the Wordle game.
+
+This class provides a strategy for generating and updating a list of candidate words based on the current game state. It randomly selects a word from the list of candidate words, providing a simple and random strategy for guessing the next word in the Wordle game.
 
 #### `WordListGeneratorLLM`
 
-The `WordListGeneratorLLM` class is a subclass of `WordListGeneratorBase` that generates a list of candidate words for the Wordle game using a Language Model (LLM). It overrides several methods to generate prompts for the LLM based on the current state of the game.
+The selected class is `WordListGeneratorLLM` in Python. It's a class used to generate a list of candidate words for the Wordle game using a Language Model (LLM). Here's a breakdown of its methods and attributes:
 
-The class has the following methods:
+**Attributes:**
 
-1. `_generate_position_text(position)`: This static method takes a position (an integer) as input and returns a string representing the ordinal form of the position (e.g., "first", "second", etc.).
+- `MAX_SIZE (int)`: The maximum size of the candidate_words list.
+- `candidate_words (list)`: A list of candidate words for the Wordle game.
+- `global_state (dict)`: A dictionary that stores the current state of the Wordle game.
+- `words_fp (str)`: The file path to the file containing the words.
+- `dump_file_count (int)`: The number of times the candidate_words list has been dumped to a file.
 
-2. `generate_correct_letter_prompt()`: This method generates a prompt for the user based on the correct letters and their positions. It constructs a string that lists the correct letters and their positions in the word. If there are no correct letters, an empty string is returned.
+**Methods:**
 
-3. `generate_present_letter_prompt()`: This method generates a prompt for the user based on the present letters and their positions. It constructs a string that lists the present letters and their positions in the word. If there are no present letters, an empty string is returned.
+- `_generate_position_text(position)`: A static method that returns a string representation of a given position.
 
-4. `generate_absent_letter_prompt()`: This method generates a prompt for the user based on the absent letters. It constructs a string that lists the absent letters. If there are no absent letters, an empty string is returned.
+- `generate_llm_prompt()`: This method first updates the candidate_words list. If the list is empty, it returns None. Otherwise, it generates prompts for correct, absent, and present letters. It then constructs a list of candidate words. If the list is too long, it randomly samples a subset of the words. The prompts and the list of candidate words are written to a file.
 
-5. `generate_llm_prompt()`: This method generates a prompt for the LLM based on the current state of the game. It first updates the candidate_words list. If the list is empty, it returns None. Otherwise, it generates prompts for correct, absent, and present letters. It then constructs a list of candidate words. If the list is too long, it randomly samples a subset of the words. The prompts and the list of candidate words are written to a file.
+Example prompt:
+```
+Solve the puzzle by guessing a five-letter word using these clues.
+
+If more than one word meets the criteria, select the word that is more common. Provide step-by-step instructions for how you arrived at the selected word. When writing the instructions, do not list words. Return only a json structure with the key 'recommendation' for the recommended word and 'explanation' for your explantion.
+List of candidate words:
+benjy
+bensh
+fease
+feaze
+fezzy
+gease
+gnash
+heave
+henge
+hewgh
+kebby
+kesse
+knave
+njave
+seave
+seavy
+sense
+shaky
+skaff
+snash
+swash
+weave
+webby
+whase
+yezzy
+```
+
+Example JSON output
+```
+{
+   "recommendation": "weave", 
+   "explanation": "The word 'weave' is selected because it is a common English word and it meets the criteria of being a five-letter word. Other words in the list may not be as commonly used or recognized in English."
+}
+```
+
+This class provides a strategy for generating and updating a list of candidate words based on the current game state using a Language Model (LLM). It can be used as part of a larger system that includes other classes like `WordListGeneratorRandom`, which generates candidate words randomly.
 
 #### `OpenAIInterace`
 
