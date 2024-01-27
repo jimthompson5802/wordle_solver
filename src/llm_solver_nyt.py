@@ -54,6 +54,11 @@ def main():
             # Ask the user to confirm the response is correct
             input_ok = input(f"Is this correct: '{wordle_response}'? (y/n)")
 
+        # check if the guess is correct
+        if wordle_response == "ggggg":
+            print(f'\n>>>>Success wordle game, correctly guessed {word} in {attemp_count} attempts')
+            break
+
         # Loop over each letter in the word and its corresponding feedback
         for i, feedback_pair in enumerate(zip(word, wordle_response)):
             # Unpack the letter and feedback from the pair
@@ -136,8 +141,8 @@ def main():
             print("\n>>>>No candidate words left aborting...")
             break
 
-        # Print the final state of the word list
-        print(f"global_state: {wordle_virtual_assistant.global_state}")    
+    # Print the final state of the word list
+    print(f"global_state: {wordle_virtual_assistant.global_state}")    
 
 if __name__ == "__main__":
     main()
