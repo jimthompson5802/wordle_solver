@@ -94,22 +94,24 @@ global_state: {'present': {(3, 'e')}, 'correct': {(0, 'a')}, 'absent': {'c', 'd'
 #### Example Prompt for LLM
 ``` 
 Solve the puzzle by guessing a five-letter word using these clues.
-Remove words from consideration that contain these letters:  'c',  'u',  'h',  'n',  's',  'd',  
-'i',  'p',  'l',  't'.
-Words must contain these letters in the following positions: 'e' in the second, 'a' in the fifth.
-Words must contain these letters with the position restrictions:  'a' must not be in the first position,  
-'e' must not be in the third position,  'r' must not be in the third position,  
-'a' must not be in the third position,  'e' must not be in the fourth position.
-If more than one word meets the criteria, select the word that is more common. Provide step-by-step 
-instructions for how you arrived at the selected word. When writing the instructions, do not list words. 
-Return only a json structure with the key 'recommendation' for the recommended word and 'explanation' 
-for your explantion.
+
+If more than one word meets the criteria, select the word that is more common. Provide step-by-step instructions for how you arrived at the selected word. When writing the instructions, do not list words. Return only a json structure with the key 'recommendation' for the recommended word and 'explanation' for your explantion.
 List of candidate words:
-bemba
-gemma
-regga
-regma
-zebra
+bitty
+ditty
+kilty
+kitty
+milty
+mitty
+witty
+```
+
+#### Response from LLM
+```json
+{
+   "recommendation": "kitty", 
+   "explanation": "The word 'kitty' is selected because it is a common English word and it meets the criteria of being a five-letter word. Other words in the list may not be as commonly used or recognized in English."
+}
 ```
 
 #### Sample run using ChatGPT interface by uploading the prompt file
@@ -225,83 +227,115 @@ If the correct word is "apple" and you have guessed "pepla", you would enter "yy
 For example, if the correct word is "apple" and you have guessed "fable", you would enter ".y.gg" (without the quotes) because 'f' and 'b' are not in "apple" and 'l' and 'e' are in the correct postion and 'a' is in the word but in the wrong position.
 
 #### Example run
-``` 
-attempt 1 word is adieu
-Enter wordle response: ....
-Is this correct: '....'? (y/n)y
-The result is {'correct': [], 'present': [], 'absent': ['a', 'd', 'i', 'e']}
-global_state: {'present': set(), 'correct': set(), 'absent': {'d', 'i', 'e', 'a'}}
-before_size: 15920, after_size: 2006
-WSVA recommendation: 'coyly' from list:
-botry
-cohow
-coyly
-coyos
-cunts
-cusps
-fount
-ghyll
-klong
-kumyk
-lochy
-mucky
-myrrh
-plugs
-pokom
-showy
-snugs
-solon
-spock
-stunk
-swoun
-syrus
-tubby
-wolfs
-zokor
+```text
+$ python src/llm_solver_nyt.py  --api
+API: True
 
-Use recommended word 'coyly'? (y/n)n
-What word should be used?: spock
-Is this correct: 'spock'? (y/n)y
-global_state: {'present': set(), 'correct': set(), 'absent': {'d', 'i', 'e', 'a'}}
+attempt 1 word is trace
+Enter wordle response: ..g.g
+Is this correct: '..g.g'? (y/n)y
+The result is {'correct': [(2, 'a'), (4, 'e')], 'present': [], 'absent': ['t', 'r', 'c']}
+global_state: {'present': set(), 'correct': {(4, 'e'), (2, 'a')}, 'absent': {'c', 'r', 't'}}
+before_size: 15920, after_size: 108
+WSVA recommendation: 'blame' from list:
+abase
+abaze
+avale
+blame
+djave
+emane
+flake
+glave
+glaze
+heave
+image
+leave
+osage
+phage
+plage
+shake
+shave
+slade
+slane
+smaze
+spave
+suave
+swage
+ukase
+weave
 
-attempt 2 word is spock
-Enter wordle response: gy...
-Is this correct: 'gy...'? (y/n)y
-The result is {'correct': [(0, 's')], 'present': [(1, 'p')], 'absent': ['o', 'c', 'k']}
-global_state: {'present': {(1, 'p')}, 'correct': {(0, 's')}, 'absent': {'o', 'd', 'c', 'e', 'k', 'i', 'a'}}
-before_size: 2006, after_size: 74
-WSVA recommendation: 'stunt' from list:
-shuff
-shuns
-shunt
-shuts
-slump
-slurp
-smrgs
-snubs
-snuff
-snurl
-strub
-stuff
-stulm
-stuns
-stunt
-sturt
-stymy
-subst
-sully
-sumps
-sumpt
-suppl
-swung
-sylph
-syrus
+Use recommended word 'blame'? (y/n)y
 
-Use recommended word 'stunt'? (y/n)y
-global_state: {'present': {(1, 'p')}, 'correct': {(0, 's')}, 'absent': {'o', 'd', 'c', 'e', 'k', 'i', 'a'}}
+attempt 2 word is blame
+Enter wordle response: ..g.g
+Is this correct: '..g.g'? (y/n)y
+The result is {'correct': [(2, 'a'), (4, 'e')], 'present': [], 'absent': ['b', 'l', 'm']}
+global_state: {'present': set(), 'correct': {(4, 'e'), (2, 'a')}, 'absent': {'l', 'b', 't', 'c', 'm', 'r'}}
+before_size: 108, after_size: 61
+WSVA recommendation: 'spade' from list:
+adage
+adawe
+deave
+diane
+duane
+faade
+goave
+heave
+huave
+keawe
+knape
+oxane
+peage
+phage
+phane
+quave
+shane
+shave
+soave
+spade
+spake
+spave
+suave
+vyase
+weave
 
-attempt 3 word is stunt
-Enter wordle response: 
+Use recommended word 'spade'? (y/n)y
+
+attempt 3 word is spade
+Enter wordle response: g.g.g
+Is this correct: 'g.g.g'? (y/n)y
+The result is {'correct': [(0, 's'), (2, 'a'), (4, 'e')], 'present': [], 'absent': ['p', 'd']}
+global_state: {'present': set(), 'correct': {(4, 'e'), (0, 's'), (2, 'a')}, 'absent': {'p', 'l', 'b', 't', 'c', 'm', 'r', 'd'}}
+before_size: 61, after_size: 8
+WSVA recommendation: 'shake' from list:
+seave
+shake
+shane
+shave
+snake
+soave
+suave
+swage
+
+Use recommended word 'shake'? (y/n)y
+
+attempt 4 word is shake
+Enter wordle response: g.ggg
+Is this correct: 'g.ggg'? (y/n)y
+The result is {'correct': [(0, 's'), (2, 'a'), (3, 'k'), (4, 'e')], 'present': [], 'absent': ['h']}
+global_state: {'present': set(), 'correct': {(3, 'k'), (4, 'e'), (0, 's'), (2, 'a')}, 'absent': {'p', 'l', 'b', 't', 'c', 'm', 'h', 'r', 'd'}}
+before_size: 8, after_size: 1
+WSVA recommendation: 'snake' from list:
+snake
+
+Use recommended word 'snake'? (y/n)y
+
+attempt 5 word is snake
+Enter wordle response: ggggg
+Is this correct: 'ggggg'? (y/n)y
+
+>>>>Success wordle game, correctly guessed snake in 5 attempts
+global_state: {'present': set(), 'correct': {(3, 'k'), (4, 'e'), (0, 's'), (2, 'a')}, 'absent': {'p', 'l', 'b', 't', 'c', 'm', 'h', 'r', 'd'}}
 ```
 
 
@@ -519,6 +553,17 @@ uninn
 ```
 Repeated letters are allowed in Wordle.
 
+
+### Inconsistent LLM explanations
+
+```json
+{
+   "recommendation": "shake", 
+   "explanation": "The first step is to eliminate words that have uncommon letters or combinations. 'Seave', 'soave', 'suave', and 'swage' are eliminated because 'ea', 'oa', 'ua', and 'wa' are less common in English words. 'Shane' and 'snake' are eliminated because 'ane' and 'ake' are less common endings than 'ake'. This leaves 'shake' and 'shave'. 'Shake' is chosen because it is a more common word than 'shave'."
+}
+```
+
+The reason for eliminating 'ake' is inconsistent.
 
 ### Over-prompting
 
