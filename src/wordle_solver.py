@@ -221,6 +221,19 @@ class WordListGeneratorLLM(WordListGeneratorBase):
 
     MAX_SIZE = 25
 
+    def __init__(self, words_fp):
+        """
+        Initializes the WordListGeneratorLLM with the file path to the words file.
+
+        This method calls the constructor of the base class and initializes the prompt_word_list attribute to an empty string.
+
+        Args:
+            words_fp (str): The file path to the file containing the words.
+        """
+
+        super().__init__(words_fp)
+        self.guessed_word = None
+
     @staticmethod
     def _generate_position_text(position):
         match position:
@@ -335,7 +348,7 @@ class WordListGeneratorLLM(WordListGeneratorBase):
 
             self.dump_file_count += 1
             with open(f"data/prompts_{self.dump_file_count:03}.txt", 'w') as file:
-                file.write(f"guessed word: self.guessed_word\n")
+                file.write(f"guessed word: {self.guessed_word}\n")
                 file.write(f"global_state:\n{self.global_state}\n\n")
                 file.write(generated_prompt)
 
