@@ -1,8 +1,11 @@
 import argparse
 import json
+import random
 import sys
 
 from wordle_solver import WordListGeneratorLLM, OpenAIInterface
+
+CANIDATE_FIRST_WORD_LIST = ["adieu", "trace", "crate",]
 
 def main():
     parser = argparse.ArgumentParser(description='Process some inputs.')
@@ -24,7 +27,7 @@ def main():
 
 
     # create initial guess
-    word = "adieu"
+    word = random.choice(CANIDATE_FIRST_WORD_LIST)
     attemp_count = 0
     while attemp_count < 7:
         attemp_count += 1
