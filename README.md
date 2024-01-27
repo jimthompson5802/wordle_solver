@@ -473,6 +473,7 @@ The class has two methods:
 
 ## Observations:
 
+### Hallucination
 Example of LLM hallucinating on the explanation.  
 
 **Prompt**:
@@ -517,3 +518,39 @@ uninn
 }
 ```
 Repeated letters are allowed in Wordle.
+
+
+### Over-prompting
+
+
+```text
+Solve the puzzle by guessing a five-letter word using these clues.
+Remove words from consideration that contain these letters:  'c',  'u',  'h',  'n',  's',  'd',  
+'i',  'p',  'l',  't'.
+Words must contain these letters in the following positions: 'e' in the second, 'a' in the fifth.
+Words must contain these letters with the position restrictions:  'a' must not be in the first position,  
+'e' must not be in the third position,  'r' must not be in the third position,  
+'a' must not be in the third position,  'e' must not be in the fourth position.
+If more than one word meets the criteria, select the word that is more common. Provide step-by-step 
+instructions for how you arrived at the selected word. When writing the instructions, do not list words. 
+Return only a json structure with the key 'recommendation' for the recommended word and 'explanation' 
+for your explantion.
+List of candidate words:
+bemba
+gemma
+regga
+regma
+zebra
+```
+
+These instructions were already taken care of by regex filtering of the source word list.
+```text
+Remove words from consideration that contain these letters:  'c',  'u',  'h',  'n',  's',  'd',  
+'i',  'p',  'l',  't'.
+Words must contain these letters in the following positions: 'e' in the second, 'a' in the fifth.
+Words must contain these letters with the position restrictions:  'a' must not be in the first position,  
+'e' must not be in the third position,  'r' must not be in the third position,  
+'a' must not be in the third position,  'e' must not be in the fourth position.
+```
+
+Eventually removed these types of instructions from the prompt.
