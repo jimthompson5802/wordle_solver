@@ -1,5 +1,5 @@
 
-from wordle_solver import WordListGeneratorRandom, WordListGeneratorLLM
+from wordle_solver import WordListGeneratorRandom
 from wordle_judge import WordleJudge
 
 DUMP_CANDIDATES = False
