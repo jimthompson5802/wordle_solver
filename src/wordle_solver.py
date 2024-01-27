@@ -237,56 +237,56 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             case _:
                 return "unknown"
 
+    # TODO: clean up code
+    # def generate_correct_letter_prompt(self):
+    #     """
+    #     Generates a prompt for the user based on the correct letters and their positions.
 
-    def generate_correct_letter_prompt(self):
-        """
-        Generates a prompt for the user based on the correct letters and their positions.
+    #     This method constructs a string that lists the correct letters and their positions in the word. The 
+    #     letters and positions are sorted in ascending order of position. If there are no correct letters, 
+    #     an empty string is returned.
 
-        This method constructs a string that lists the correct letters and their positions in the word. The 
-        letters and positions are sorted in ascending order of position. If there are no correct letters, 
-        an empty string is returned.
+    #     Returns:
+    #         str: A string that lists the correct letters and their positions, or an empty string 
+    #              if there are no correct letters.
+    #     """
 
-        Returns:
-            str: A string that lists the correct letters and their positions, or an empty string 
-                 if there are no correct letters.
-        """
+    #     if len(self.global_state["correct"]) == 0:
+    #         prompt_specifics =  ""
+    #     else:
+    #         tuple_list = list(self.global_state["correct"])
+    #         tuple_list.sort(key=lambda x: x[0])
+    #         prompt_specifics =  "\n".join(
+    #             [f"Words must contain '{letter}' in the {self._generate_position_text(position)} position."  for position, letter in tuple_list]
+    #         )
+    #     if len(prompt_specifics) == 0:
+    #         return ""
+    #     else:
+    #         return prompt_specifics
 
-        if len(self.global_state["correct"]) == 0:
-            prompt_specifics =  ""
-        else:
-            tuple_list = list(self.global_state["correct"])
-            tuple_list.sort(key=lambda x: x[0])
-            prompt_specifics =  "\n".join(
-                [f"Words must contain '{letter}' in the {self._generate_position_text(position)} position."  for position, letter in tuple_list]
-            )
-        if len(prompt_specifics) == 0:
-            return ""
-        else:
-            return prompt_specifics
+    # def generate_present_letter_prompt(self):
+    #     """
+    #     Generates a prompt for the user based on the present letters and their positions.
 
-    def generate_present_letter_prompt(self):
-        """
-        Generates a prompt for the user based on the present letters and their positions.
+    #     This method constructs a string that lists the present letters and their positions in the word. The letters and positions are sorted in ascending order of position. If there are no present letters, an empty string is returned.
 
-        This method constructs a string that lists the present letters and their positions in the word. The letters and positions are sorted in ascending order of position. If there are no present letters, an empty string is returned.
+    #     Returns:
+    #         str: A string that lists the present letters and their positions, or an empty string if there are no present letters.
+    #     """
 
-        Returns:
-            str: A string that lists the present letters and their positions, or an empty string if there are no present letters.
-        """
+    #     if len(self.global_state["present"]) == 0:
+    #         prompt_specifics = ""
+    #     else:
+    #         tuple_list = list(self.global_state["present"])
+    #         tuple_list.sort(key=lambda x: x[0])
+    #         prompt_specifics =  "\n".join(
+    #             [f"Words must not contain the '{letter}' in the {self._generate_position_text(position)} position." for position, letter in tuple_list]
+    #         )
 
-        if len(self.global_state["present"]) == 0:
-            prompt_specifics = ""
-        else:
-            tuple_list = list(self.global_state["present"])
-            tuple_list.sort(key=lambda x: x[0])
-            prompt_specifics =  "\n".join(
-                [f"Words must not contain the '{letter}' in the {self._generate_position_text(position)} position." for position, letter in tuple_list]
-            )
-
-        if len(prompt_specifics) == 0:
-            return ""
-        else:
-            return prompt_specifics
+    #     if len(prompt_specifics) == 0:
+    #         return ""
+    #     else:
+    #         return prompt_specifics
 
     def generate_llm_prompt(self):
         """
@@ -307,8 +307,9 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             return None
         else:
             # generate prompt for LLM
-            prompt_correct_letters = self.generate_correct_letter_prompt()
-            prompt_present_letters = self.generate_present_letter_prompt()
+            # TODO: clean up code
+            # prompt_correct_letters = self.generate_correct_letter_prompt()
+            # prompt_present_letters = self.generate_present_letter_prompt()
 
             if len(self.candidate_words) > self.MAX_SIZE:
                 # hueristic: if the candidate word list is too long and will exceed the LLM token limit
@@ -320,8 +321,9 @@ class WordListGeneratorLLM(WordListGeneratorBase):
 
             generated_prompt = (
                 "Solve the puzzle by guessing a five-letter word using these clues.\n"
-                + prompt_correct_letters
-                + "\n" + prompt_present_letters 
+                # TODO: clean up code
+                # + prompt_correct_letters
+                # + "\n" + prompt_present_letters 
                 + "\nIf more than one word meets the criteria, select the word that is more common. "
                 + "Provide step-by-step instructions for how you arrived at the selected word. "
                 + "When writing the instructions, do not list words. "
@@ -333,6 +335,8 @@ class WordListGeneratorLLM(WordListGeneratorBase):
 
             self.dump_file_count += 1
             with open(f"data/prompts_{self.dump_file_count:03}.txt", 'w') as file:
+                file.write(f"guessed word: self.guessed_word\n")
+                file.write(f"global_state:\n{self.global_state}\n\n")
                 file.write(generated_prompt)
 
             return generated_prompt
