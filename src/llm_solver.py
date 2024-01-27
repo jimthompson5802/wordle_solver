@@ -38,6 +38,7 @@ def main():
     word = random.choice(CANIDATE_FIRST_WORD_LIST)
     result = False
     attemp_count = 0
+    llm_response_count = 0
     while not isinstance(result, bool) or not result:
         attemp_count += 1
         if attemp_count < 7:
@@ -59,6 +60,10 @@ def main():
             generated_prompt = word_list.generate_llm_prompt()
             if api:
                 llm_response = json.loads(openai_interface.chat(generated_prompt))
+                llm_response_count += 1
+                with open(f"data/llm_response_{llm_response_count:03}.json", "w") as f:
+                    json.dump(llm_response, f)
+
                 word = llm_response["recommendation"]
             else:
                 print("\nCopy and paste the prompt file to OpenAI Playground and enter the recommendation")

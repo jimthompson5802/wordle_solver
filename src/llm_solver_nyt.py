@@ -29,6 +29,7 @@ def main():
     # create initial guess
     word = random.choice(CANIDATE_FIRST_WORD_LIST)
     attemp_count = 0
+    llm_response_count = 0
     while attemp_count < 7:
         attemp_count += 1
         if attemp_count < 7:
@@ -98,6 +99,9 @@ def main():
         if api:
             # Send the generated prompt to the OpenAI API and parse the response
             llm_response = json.loads(openai_interface.chat(generated_prompt))
+            llm_response_count += 1
+            with open(f'data/llm_response_{llm_response_count:03}.json', 'w') as f:
+                json.dump(llm_response, f)
 
             # Extract the recommended word from the response
             recommended_word = llm_response["recommendation"]

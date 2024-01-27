@@ -13,7 +13,7 @@ def test_eliminate_words_with_letters():
     generator = WordListGeneratorBase('data/five-letter-words.txt')
     generator.load()
     generator.global_state["absent"].add('a')
-    generator.candidate_words = generator._eliminate_words_with_letters()
+    generator.candidate_words = generator._eliminate_words_with_absent_letters()
     assert all('a' not in word for word in generator.candidate_words)
 
 def test_generate_regex_for_correct():
