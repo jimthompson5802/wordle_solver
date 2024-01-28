@@ -1,19 +1,37 @@
+import argparse
+import json
+import random
 
 from wordle_solver import WordListGeneratorRandom
 from wordle_judge import WordleJudge
 
-DUMP_CANDIDATES = False
+CANIDATE_FIRST_WORD_LIST = ["adieu", "trace", "crate",]
+
 
 def main():
+    parser = argparse.ArgumentParser(description='Process some inputs.')
+    parser.add_argument('word', type=str, help='A 5-letter word')
+
+    args = parser.parse_args()
+
+    # Access the arguments
+    word = args.word
+
+    # Ensure the word is 5 letters long
+    if len(word) != 5:
+        raise argparse.ArgumentTypeError("Word must be 5 letters long")
+
+    print(f"Word: {word}")
+
     # Create a WordleJudge object
-    wordle_game = WordleJudge("apple")
+    wordle_game = WordleJudge(word)
 
     # Create a WordList object
-    word_list = WordListGeneratorRandom("data/five-letter-words.txt")
-    word_list.load()
+    wordle_virtual_assistant = WordListGeneratorRandom("data/five-letter-words.txt")
+    wordle_virtual_assistant.load()
 
     # create initial guess
-    word = "adieu"
+    word = random.choice(CANIDATE_FIRST_WORD_LIST)
     result = False
     attemp_count = 0
     while not isinstance(result, bool) or not result:
@@ -31,16 +49,16 @@ def main():
         print(f'The result is {result}')
         if not isinstance(result, bool):
             # Update the word list
-            word_list.update_state(result)
-            word_list.print_state()
+            wordle_virtual_assistant.update_state(result)
+            wordle_virtual_assistant.print_state()
             
             # Get a random word
-            word = word_list.get_candidate_word(dump_candidates=DUMP_CANDIDATES)
+            word = wordle_virtual_assistant.get_candidate_word()
             if word is None:
                 print(">>>>No candidate words left")
                 break
     
-    print(f"global_state: {word_list.global_state}")
+    print(f"global_state: {wordle_virtual_assistant.global_state}")
     
 if __name__ == "__main__":
     main()
