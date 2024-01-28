@@ -1,5 +1,6 @@
 
 import json
+import os
 import random
 import re
 import pprint
@@ -415,3 +416,55 @@ class OpenAIInterface:
             presence_penalty=0
         )
         return response.choices[0].message.content
+    
+
+class ExperimentRecorder:
+    """
+    A class used to record the results of an experiment.
+
+    This class provides methods to record the results of an experiment to a file.
+
+    Attributes:
+        fp (str): The file path to the file to write the results to.
+    """
+
+    def __init__(self, fp=None):
+        """
+        Initializes the ExperimentRecorder with the file path to the file to write the results to.
+
+        This method opens the file for writing.
+
+        Args:
+            fp (str): The file path to the file to write the results to.
+        """
+
+        self.fp = fp
+        if self.fp:
+            # test if the file exists
+            if not os.path.exists(self.fp):
+                # if the file doesn't exist, create it and write the header
+                self.file = open(fp, 'w')
+                self.file.write("solver_type,initial_word,word,num_attempts\n")
+            else:
+                # if the file exists, append to it
+                self.file = open(fp, 'a')
+
+
+    def record(self, solver_type, initial_word, word, num_attempts):
+        """
+        Records the result of an experiment to a file.
+
+        This method writes the result to the file, followed by a newline.
+
+        Args:
+            result (dict): The result to record.
+        """
+        if self.fp:
+            self.file.write(solver_type + "," + initial_word + "," + word + "," + str(num_attempts) + "\n")
+
+    def close(self):
+        """
+        Closes the file.
+        """
+        if self.fp:
+            self.file.close()

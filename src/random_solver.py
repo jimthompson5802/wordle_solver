@@ -2,7 +2,7 @@ import argparse
 import json
 import random
 
-from wordle_solver import WordListGeneratorRandom
+from wordle_solver import WordListGeneratorRandom, ExperimentRecorder
 from wordle_judge import WordleJudge
 
 CANIDATE_FIRST_WORD_LIST = ["adieu", "trace", "crate",]
@@ -11,27 +11,33 @@ CANIDATE_FIRST_WORD_LIST = ["adieu", "trace", "crate",]
 def main():
     parser = argparse.ArgumentParser(description='Process some inputs.')
     parser.add_argument('word', type=str, help='A 5-letter word')
+    parser.add_argument('--exp_fp', type=str, default=None, help='File path to record experiment results')
 
     args = parser.parse_args()
 
     # Access the arguments
     word = args.word
+    experiment_fp = args.exp_fp
 
     # Ensure the word is 5 letters long
     if len(word) != 5:
         raise argparse.ArgumentTypeError("Word must be 5 letters long")
 
-    print(f"Word: {word}")
+    print(f"Word: {word}, experiment_fp: {experiment_fp}")
 
     # Create a WordleJudge object
     wordle_game = WordleJudge(word)
+
+    # Create a ExperimentRecorder object
+    if experiment_fp:
+        experiment_recorder = ExperimentRecorder(experiment_fp)
 
     # Create a WordList object
     wordle_virtual_assistant = WordListGeneratorRandom("data/five-letter-words.txt")
     wordle_virtual_assistant.load()
 
     # create initial guess
-    word = random.choice(CANIDATE_FIRST_WORD_LIST)
+    initial_word = word = random.choice(CANIDATE_FIRST_WORD_LIST)
     result = False
     attemp_count = 0
     while not isinstance(result, bool) or not result:
@@ -59,6 +65,9 @@ def main():
                 break
     
     print(f"global_state: {wordle_virtual_assistant.global_state}")
-    
+    if experiment_fp:
+        experiment_recorder.record("random", initial_word, word, attemp_count)
+        experiment_recorder.close()
+        
 if __name__ == "__main__":
     main()

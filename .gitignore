@@ -131,6 +131,7 @@ cython_debug/
 # data files
 *.txt
 *.json
+*.csv
 
 # exceptions
 !requirements.txt
