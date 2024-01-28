@@ -600,4 +600,5 @@ Words must contain these letters with the position restrictions:  'a' must not b
 'a' must not be in the third position,  'e' must not be in the fourth position.
 ```
 
-Eventually removed these types of instructions from the prompt.
+Afer removing the extraneous instructions the quality of recommended word appears to be improved.  More testing is needed to quantify this, e.g., compared to random guessing.
+
