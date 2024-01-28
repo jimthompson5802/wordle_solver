@@ -314,7 +314,7 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             str or None: A string that contains the generated prompt, or None if the candidate_words list is empty.
         """
 
-        self.update_candidate_words(dump_candidates=False)
+        self.update_candidate_words()
 
         if len(self.candidate_words) == 0:
             return None
