@@ -507,6 +507,39 @@ The class has two methods:
 
 2. `chat(self, prompt)`: This method invokes the chat API with a given prompt and returns the contents to the caller. It creates a chat completion with the model, a system message saying "You are a helpful assistant to solve the Wordle puzzle.", and a user message containing the provided prompt. It sets the temperature to 0.1, the maximum number of tokens to 4096, the top_p to 1, and both the frequency penalty and presence penalty to 0. It then returns the content of the first choice from the response.
 
+## Experiments
+
+### `src/run_experiment.py`
+
+This Python script is designed to run an experiment using two different solvers, `random_solver` and `llm_solver`, on a set of words. The experiment results are stored in a CSV file.
+
+Here's a step-by-step explanation:
+
+1. The script imports necessary modules and functions from `random_solver` and `llm_solver`.
+
+2. It defines constants for the number of words and trials to be used in the experiment, and the file path for the experiment data.
+
+3. If the script is run as the main program, it first checks if the experiment data file already exists. If it does, the file is deleted to start a new experiment.
+
+4. It sets a random seed for reproducibility.
+
+5. It loads a list of words from a file, selects a random sample of these words, and converts them to lowercase.
+
+6. It prints the command line arguments and the experiment parameters.
+
+7. It prepares the command line arguments for the `random_solver`. Then, for each word in the test list, it adds the word and experiment file path to the command line arguments, runs the `random_solver` for the specified number of trials, and then removes the word and experiment file path from the command line arguments.
+
+8. It does the same for the `llm_solver`, but also includes an API flag in the command line arguments.
+
+9. Finally, it prints the command line arguments.
+
+This script is likely part of a larger project where the performance of the `random_solver` and `llm_solver` are being compared. The solvers are probably algorithms for solving a word puzzle, and the experiment is run multiple times for different words to get a robust measure of their performance.
+
+### `src/experiment_analysis.ipynb`
+
+Analyses the results of the experiment.
+
+
 ## Observations:
 
 ### Hallucination
