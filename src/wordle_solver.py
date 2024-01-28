@@ -128,7 +128,7 @@ class WordListGeneratorBase:
     def print_state(self):
         print(f"global_state: {self.global_state}")
 
-    def update_candidate_words(self, dump_candidates=False):
+    def update_candidate_words(self):
         """
         Updates the candidate_words list based on the current global_state.
 
@@ -158,14 +158,12 @@ class WordListGeneratorBase:
         # Print the size of the candidate_words list before and after filtering
         print(f"before_size: {before_size}, after_size: {after_size}")
 
-        # If dump_candidates is True, write the updated candidate_words list to a file
-        if dump_candidates:
-            # Increment the dump_file_count
-            self.dump_file_count += 1
-            # Open a new file for writing
-            with open(f"data/candidates_{self.dump_file_count:03}.txt", 'w') as file:
-                # Write the candidate_words list to the file, one word per line
-                file.write('\n'.join(self.candidate_words))
+        # Increment the dump_file_count
+        self.dump_file_count += 1
+        # Open a new file for writing
+        with open(f"data/candidates_{self.dump_file_count:03}.txt", 'w') as file:
+            # Write the candidate_words list to the file, one word per line
+            file.write('\n'.join(self.candidate_words))
 
 class WordListGeneratorRandom(WordListGeneratorBase):
     """
@@ -181,7 +179,7 @@ class WordListGeneratorRandom(WordListGeneratorBase):
         dump_file_count (int): The number of times the candidate_words list has been dumped to a file.
     """
 
-    def get_candidate_word(self, dump_candidates=False):
+    def get_candidate_word(self):
         """
         Updates the candidate_words list and returns a random word from the list.
 
@@ -197,7 +195,7 @@ class WordListGeneratorRandom(WordListGeneratorBase):
             str or None: A random word from the candidate_words list, or None if the list is empty.
         """
 
-        self.update_candidate_words(dump_candidates=dump_candidates)
+        self.update_candidate_words()
 
         # Return a random word from the list of candidate words
         if len(self.candidate_words) == 0:
