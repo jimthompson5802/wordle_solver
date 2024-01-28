@@ -158,12 +158,6 @@ class WordListGeneratorBase:
         # Print the size of the candidate_words list before and after filtering
         print(f"before_size: {before_size}, after_size: {after_size}")
 
-        # Increment the dump_file_count
-        self.dump_file_count += 1
-        # Open a new file for writing
-        with open(f"data/candidates_{self.dump_file_count:03}.txt", 'w') as file:
-            # Write the candidate_words list to the file, one word per line
-            file.write('\n'.join(self.candidate_words))
 
 class WordListGeneratorRandom(WordListGeneratorBase):
     """
@@ -196,6 +190,13 @@ class WordListGeneratorRandom(WordListGeneratorBase):
         """
 
         self.update_candidate_words()
+
+        # Increment the dump_file_count
+        self.dump_file_count += 1
+        # Open a new file for writing
+        with open(f"data/candidates_{self.dump_file_count:03}.txt", 'w') as file:
+            # Write the candidate_words list to the file, one word per line
+            file.write('\n'.join(self.candidate_words))
 
         # Return a random word from the list of candidate words
         if len(self.candidate_words) == 0:
