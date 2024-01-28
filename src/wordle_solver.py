@@ -2,9 +2,11 @@
 import json
 import random
 import re
+import pprint
 
 from openai import OpenAI
 
+pp = pprint.PrettyPrinter(indent=4)
 
 class WordListGeneratorBase:
     """
@@ -349,7 +351,8 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             self.dump_file_count += 1
             with open(f"data/prompts_{self.dump_file_count:03}.txt", 'w') as file:
                 file.write(f"guessed word: {self.guessed_word}\n")
-                file.write(f"global_state:\n{self.global_state}\n\n")
+                pretty_global_state = pp.pformat(self.global_state)
+                file.write(f"global_state:\n{pretty_global_state}\n\n")
                 file.write(generated_prompt)
 
             return generated_prompt
