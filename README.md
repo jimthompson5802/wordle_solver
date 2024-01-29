@@ -26,6 +26,7 @@ For a high-level overview of the core modules, [click on this link](docs/README.
 ### LLM Solver Distribution of Number of Attemps by Initial Word
 ![](docs/images/boxplot_num_attempts_initial_word.png)
 
+Full analysis can be found [here](src/experiment_analysis.ipynb).
 
 ## Experiments
 
