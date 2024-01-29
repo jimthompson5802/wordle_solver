@@ -10,6 +10,7 @@ GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the 
 * temperature=0.1
 * max_tokens=4096
 
+For a high-level overview of the core modules, [click on this link](docs/README.md).
 
 ## Experiment Results
 
