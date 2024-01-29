@@ -5,7 +5,7 @@ import sys
 
 from wordle_solver import WordListGeneratorLLM, OpenAIInterface
 
-CANIDATE_FIRST_WORD_LIST = ["adieu", "trace", "crate",]
+CANIDATE_FIRST_WORD_LIST = ["trace",]
 
 def main():
     parser = argparse.ArgumentParser(description='Process some inputs.')
