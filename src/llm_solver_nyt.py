@@ -113,9 +113,10 @@ def main():
 
             # Extract the recommended word from the response
             recommended_word = llm_response["recommendation"]
+            recommendation_explanation = llm_response["explanation"]
 
             # Print the recommended word and the list of prompt words
-            print(f"WSVA recommendation: '{recommended_word}' from list:\n{wordle_virtual_assistant.prompt_word_list}")
+            print(f"WSVA recommendation: '{recommended_word}'\n{recommendation_explanation}\nFROM LIST:\n{wordle_virtual_assistant.prompt_word_list}")
 
             # Have user confirm use of the recommended word or enter another word
             input_ok = "n"
