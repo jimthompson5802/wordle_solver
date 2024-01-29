@@ -10,6 +10,21 @@ GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the 
 * temperature=0.1
 * max_tokens=4096
 
+
+## Experiment Results
+
+### Overall Wordle Solver Virtual Assistant (WSVA) Performance: LLM vs Random
+![](docs/images/percentage_solved.png)
+
+### Distribution of Number of Attempts to Solve a Wordle Puzzle: LLM vs Random
+![](docs/images/boxplot_num_attempts.png)
+
+### LLM Solver Performance By Initial Word
+![](docs/images/percentage_solved_initial_word.png)
+
+### LLM Solver Distribution of Number of Attemps by Initial Word
+![](docs/images/boxplot_num_attempts_initial_word.png)
+
 ## Core Modules
 
 ### `src/llm_solver.py`  
