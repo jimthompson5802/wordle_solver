@@ -340,6 +340,30 @@ global_state: {'present': set(), 'correct': {(3, 'k'), (4, 'e'), (0, 's'), (2, '
 
 Used to test Random Solver with local WordleJudge Simulator.
 
+The selected code is a Python script for a game solver for the game Wordle. The script uses a random strategy to guess the correct word.
+
+Here's a breakdown of what the code does:
+
+1. **Imports**: The script imports necessary modules and classes. `argparse` is used for command-line argument parsing, `json` and `random` are standard Python libraries, and `WordListGeneratorRandom`, `ExperimentRecorder`, and `WordleJudge` are custom classes defined elsewhere.
+
+2. **Candidate First Word List**: This is a list of words that the script can use as the first guess.
+
+3. **Main Function**: This is where the script's main logic is defined. It starts by setting up command-line arguments with `argparse`. The script accepts a 5-letter word as an argument, as well as optional arguments for an experiment file path and a first word to use.
+
+4. **Argument Parsing**: The script parses the command-line arguments and ensures that the provided word is 5 letters long.
+
+5. **WordleJudge Object**: The script creates a `WordleJudge` object with the provided word. This object will be used to judge the guesses.
+
+6. **ExperimentRecorder Object**: If an experiment file path was provided, the script creates an `ExperimentRecorder` object to record the results of the game.
+
+7. **WordListGeneratorRandom Object**: The script creates a `WordListGeneratorRandom` object, which is used to generate candidate words for guessing.
+
+8. **Game Loop**: The script enters a loop where it makes guesses and checks the results. If the guess is correct, the loop ends. If the guess is incorrect, the script updates its state based on the result, generates a new candidate word, and continues the loop. If the script makes more than 20 attempts or runs out of candidate words, it ends the game.
+
+9. **Recording Results**: If an experiment file path was provided, the script records the results of the game.
+
+10. **Main Script Execution**: If the script is run directly (as opposed to being imported as a module), it calls the `main` function to start the game.
+
 ### `src/wordle_judge.py` 
 
 The provided Python code defines a class `WordleJudge` that is used to judge the guesses in a word guessing game, similar to the game Wordle on NYT.

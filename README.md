@@ -33,6 +33,8 @@ For a high-level overview of the core modules, [click on this link](docs/README.
 
 This Python script is designed to run an experiment using two different solvers, `random_solver` and `llm_solver`, on a set of words. The experiment results are stored in a CSV file.
 
+The `randon_solver` is a [simple solver](docs/README.md#srcrandom_solverpy) that randomly guesses a word from a list of words. The `llm_solver` is a more [sophisticated solver](docs/README.md#srcllm_solverpy) that uses a language model to guess a word from a list of words.
+
 Here's a step-by-step explanation:
 
 1. The script imports necessary modules and functions from `random_solver` and `llm_solver`.
