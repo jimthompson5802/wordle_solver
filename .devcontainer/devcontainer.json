@@ -25,7 +25,8 @@
 				"ms-toolsai.vscode-jupyter-cell-tags",
 				"ms-toolsai.vscode-jupyter-slideshow",
 				"ms-toolsai.jupyter-keymap",
-				"mechatroner.rainbow-csv"
+				"mechatroner.rainbow-csv",
+				"Gruntfuggly.todo-tree"
 			]
 		}
 	}
