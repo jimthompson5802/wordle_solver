@@ -14,19 +14,32 @@ For a high-level overview of the core modules, [click on this link](docs/README.
 
 ## Experiment Results
 
-### Overall Wordle Solver Virtual Assistant (WSVA) Performance: LLM vs Random
+### Random Solver vs LLM Solver 10 words, 10 trials each
+
+#### Overall Wordle Solver Virtual Assistant (WSVA) Performance: LLM vs Random
 ![](docs/images/percentage_solved.png)
 
-### Distribution of Number of Attempts to Solve a Wordle Puzzle: LLM vs Random
+#### Distribution of Number of Attempts to Solve a Wordle Puzzle: LLM vs Random
 ![](docs/images/boxplot_num_attempts.png)
 
-### LLM Solver Performance By Initial Word
+#### LLM Solver Performance By Initial Word
 ![](docs/images/percentage_solved_initial_word.png)
 
-### LLM Solver Distribution of Number of Attemps by Initial Word
+#### LLM Solver Distribution of Number of Attemps by Initial Word
 ![](docs/images/boxplot_num_attempts_initial_word.png)
 
 Full analysis can be found [here](src/experiment_analysis.ipynb).
+
+### Random Solver vs LLM Solver 100 words
+
+#### Overall Wordle Solver Virtual Assistant (WSVA) Performance: LLM vs Random
+![](docs/images/percentage_solved_100_words.png)
+
+#### Distribution of Number of Attempts to Solve a Wordle Puzzle: LLM vs Random
+![](docs/images/boxplot_num_attempts_100_words.png)
+
+Full analysis can be found [here](src/experiment_analysis_100_words.ipynb).
+
 
 ## Experiments
 
@@ -60,7 +73,11 @@ This script is likely part of a larger project where the performance of the `ran
 
 ### `src/experiment_analysis.ipynb`
 
-Analyses the results of the experiment.
+Analyses the results of the experiment with 10 words, 10 trials each.
+
+### `src/experiment_analysis_100_words.ipynb`
+
+Analyses the results of the experiment with 100 words.
 
 
 ## Observations:
