@@ -12,6 +12,7 @@ def main():
     parser.add_argument('word', type=str, help='A 5-letter word')
     parser.add_argument('--api', action='store_true', help='A boolean flag for api')
     parser.add_argument('--exp_fp', type=str, default=None, help='File path to record experiment results')
+    parser.add_argument('--first_word', type=str, default=None, help='The first word to use')
 
     args = parser.parse_args()
 
@@ -19,12 +20,13 @@ def main():
     word = args.word
     api = args.api
     experiment_fp = args.exp_fp
+    first_word = args.first_word
 
     # Ensure the word is 5 letters long
     if len(word) != 5:
         raise argparse.ArgumentTypeError("Word must be 5 letters long")
 
-    print(f"Word: {word}, API: {api}, experiment_fp: {experiment_fp}")
+    print(f"Word: {word}, API: {api}, experiment_fp: {experiment_fp}, First Word: {first_word}")
 
     # Create a WordleJudge object
     wordle_game = WordleJudge(word)
@@ -41,7 +43,11 @@ def main():
     openai_interface = OpenAIInterface("/openai/api_key.json")
 
     # create initial guess
-    initial_word = word = random.choice(CANIDATE_FIRST_WORD_LIST)
+    if first_word:
+        initial_word = word = first_word
+    else:
+        initial_word = word = random.choice(CANIDATE_FIRST_WORD_LIST)
+        
     result = False
     attemp_count = 0
     llm_response_count = 0
