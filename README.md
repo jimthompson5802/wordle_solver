@@ -38,6 +38,9 @@ Full analysis can be found [here](src/experiment_analysis.ipynb).
 #### Distribution of Number of Attempts to Solve a Wordle Puzzle: LLM vs Random
 ![](docs/images/boxplot_num_attempts_100_words.png)
 
+#### Histogram of Number of Attempts to Solve a Wordle Puzzle: LLM
+![](docs/images/histogram_num_attempts_llm_100_words.png)
+
 Full analysis can be found [here](src/experiment_analysis_100_words.ipynb).
 
 
