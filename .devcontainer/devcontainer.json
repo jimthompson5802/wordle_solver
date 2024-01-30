@@ -26,7 +26,8 @@
 				"ms-toolsai.vscode-jupyter-slideshow",
 				"ms-toolsai.jupyter-keymap",
 				"mechatroner.rainbow-csv",
-				"Gruntfuggly.todo-tree"
+				"Gruntfuggly.todo-tree",
+				"donjayamanne.githistory"
 			]
 		}
 	}
