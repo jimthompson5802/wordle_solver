@@ -12,6 +12,7 @@ from llm_solver import main as llm_solver
 NUM_WORDS = 100
 NUM_TRIALS = 1
 EXPERIMENT_FP = 'data/experiment_100_words.csv'
+FIRST_WORD = 'trace'
 
 if __name__ == '__main__':
 
@@ -44,7 +45,7 @@ if __name__ == '__main__':
         sys.argv.append('--exp_fp')
         sys.argv.append(EXPERIMENT_FP)
         sys.argv.append('--first_word')
-        sys.argv.append('trace')
+        sys.argv.append(FIRST_WORD)
         # Run the solver for the specified number of trials
         for i in range(NUM_TRIALS):
             print(f"\nRandom Solver trial {i + 1} for word {word} {i_word + 1} out of {len(test_words_list)} words")
@@ -70,7 +71,7 @@ if __name__ == '__main__':
         sys.argv.append('--exp_fp')
         sys.argv.append(EXPERIMENT_FP)
         sys.argv.append('--first_word')
-        sys.argv.append('trace')
+        sys.argv.append(FIRST_WORD)
         # Run the solver for the specified number of trials
         for i in range(NUM_TRIALS):
             print(f"\nLLM Solver trial {i + 1} for word {word} {i_word + 1} out of {len(test_words_list)} words")
