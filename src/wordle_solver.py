@@ -397,26 +397,29 @@ class OpenAIInterface:
         Returns:
             dict: The contents returned by the chat API.
         """
-        response = self.openai_client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful assistant to solve the Wordle puzzle."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            temperature=0.1,
-            max_tokens=4096,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
-        return response.choices[0].message.content
-    
+        try:
+            response = self.openai_client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a helpful assistant to solve the Wordle puzzle."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                temperature=0.1,
+                max_tokens=4096,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            raise    
 
 class ExperimentRecorder:
     """
