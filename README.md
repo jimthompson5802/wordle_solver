@@ -43,6 +43,19 @@ Full analysis can be found [here](src/experiment_analysis.ipynb).
 
 Full analysis can be found [here](src/experiment_analysis_100_words.ipynb).
 
+### LLM Solver Performance Impact by Maximum Word List Size
+
+#### LLM Solver Performance by Maximum Word List Size
+![](docs/images/percentage_solved_100_words_max_size.png)
+
+#### LLM Solver Distribution of Number of Attemps by Maximum Word List Size
+![](docs/images/boxplot_num_attempts_100_words_max_size.png)
+
+#### LLM Solver Histogram of Number of Attempts by Maximum Word List Size
+![](docs/images/histogram_num_attempts_trace_max_size.png)
+
+Full analysis can be found [here](src/experiment_analysis_100_words_max_size.ipynb).
+
 
 ## Experiments
 
