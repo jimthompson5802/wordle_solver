@@ -12,6 +12,12 @@ GPT4 LLM is used to solve the puzzles.  Currently manual access to GPT4 via the 
 
 For a high-level overview of the core modules, [click on this link](docs/README.md).
 
+## Setup 
+
+Install Python packages listed in `requirements.txt` to run the code in this repository.  
+
+Create a directory `llm_trace_data` at the same level as this `README.md` file to capture the trace data from the random and LLM solvers.
+
 ## Experiment Results
 
 ### Random Solver vs LLM Solver 10 words, 10 trials each

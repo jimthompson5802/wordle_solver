@@ -76,7 +76,7 @@ def main():
             if api:
                 llm_response = json.loads(openai_interface.chat(generated_prompt))
                 llm_response_count += 1
-                with open(f'data/llm_response_{llm_response_count:03}.txt', 'w') as f:
+                with open(f'llm_trace_data/llm_response_{llm_response_count:03}.txt', 'w') as f:
                     pretty_json = json.dumps(llm_response, indent=4)
                     f.write(pretty_json)
 
