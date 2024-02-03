@@ -7,6 +7,7 @@ import pprint
 
 from openai import OpenAI
 
+
 pp = pprint.PrettyPrinter(indent=4)
 
 class WordListGeneratorBase:
