@@ -30,4 +30,5 @@ jobs:
 
     - name: Run tests with pytest
       run: |
+        mkdir llm_trace_data
         pytest -v tests/
