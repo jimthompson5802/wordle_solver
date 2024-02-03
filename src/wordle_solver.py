@@ -11,20 +11,24 @@ pp = pprint.PrettyPrinter(indent=4)
 
 class WordListGeneratorBase:
     """
-    A base class used to generate a list of candidate words for the Wordle game.
-
-    This class provides methods to load words from a file, update the game state, and update the 
-    candidate_words list based on the current game state. The game state includes present, correct, 
-    and absent letters and their positions.
+    A base class for generating word lists for the Wordle game.
 
     Attributes:
-        words_fp (str): The file path to the file containing the words.
-        candidate_words (list): A list of candidate words for the Wordle game.
-        global_state (dict): A dictionary that stores the current state of the Wordle game.
-        dump_file_count (int): The number of times the candidate_words list has been dumped to a file.
+        words_fp (str): The file path to the word list.
+        candidate_words (list): The list of candidate words.
+        global_state (dict): The global state of the game.
+        dump_file_count (int): The count of dump files.
+        dump_file_dir (str): The directory for dump files.
     """
 
-    def __init__(self, words_fp):
+    def __init__(self, words_fp, dump_file_dir="llm_trace_data"):
+        """
+        Initialize a new instance of the WordListGeneratorBase class.
+
+        Args:
+            words_fp (str): The file path to the word list.
+            dump_file_dir (str, optional): The directory for dump files. Defaults to "llm_trace_data".
+        """
         self.words_fp = words_fp
         self.candidate_words = []
         self.global_state = {
@@ -33,6 +37,7 @@ class WordListGeneratorBase:
             "absent": set()
         }
         self.dump_file_count = 0
+        self.dump_file_dir = dump_file_dir
 
     def is_letter_in_present(self, letter):
         """
@@ -195,7 +200,13 @@ class WordListGeneratorRandom(WordListGeneratorBase):
         # Increment the dump_file_count
         self.dump_file_count += 1
         # Open a new file for writing
-        with open(f"data/candidates_{self.dump_file_count:03}.txt", 'w') as file:
+        with open(
+            os.path.join(
+                self.dump_file_dir,
+                f"candidates_{self.dump_file_count:03}.txt",
+            ), 
+            'w'
+        ) as file:
             # Write the candidate_words list to the file, one word per line
             file.write('\n'.join(self.candidate_words))
 
@@ -204,7 +215,8 @@ class WordListGeneratorRandom(WordListGeneratorBase):
             return None
         else:
             return random.choice(self.candidate_words)
-        
+
+
 class WordListGeneratorLLM(WordListGeneratorBase):
     """
     A class used to generate a list of candidate words for the Wordle game using a Language Model (LLM).
@@ -293,7 +305,13 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             )
 
             self.dump_file_count += 1
-            with open(f"data/prompts_{self.dump_file_count:03}.txt", 'w') as file:
+            with open(
+                os.path.join(
+                    self.dump_file_dir, 
+                    f"prompts_{self.dump_file_count:03}.txt"
+                ), 
+                'w'
+            ) as file:
                 file.write(f"guessed word: {self.guessed_word}\n")
                 pretty_global_state = pp.pformat(self.global_state)
                 file.write(f"global_state:\n{pretty_global_state}\n\n")

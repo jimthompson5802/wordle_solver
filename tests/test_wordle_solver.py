@@ -148,7 +148,7 @@ def test_dump_file_count(setup_and_teardown, word_file):
     assert word_list_generator.dump_file_count == initial_count + 1
 
     # added code to confirm file was really created
-    file_path = 'data/candidates_001.txt'
+    file_path = os.path.join(word_list_generator.dump_file_dir, 'candidates_001.txt')
     assert os.path.exists(file_path)
 
 
@@ -170,7 +170,13 @@ def test_generate_llm_prompt():
         prompt = word_list_generator.generate_llm_prompt()
         # Check that the open function was called with the expected arguments
         # relocated tis line here to match up with context variable
-        mock_file.assert_called_once_with('data/prompts_001.txt', 'w')
+        mock_file.assert_called_once_with(
+            os.path.join(
+                word_list_generator.dump_file_dir,
+                'prompts_001.txt', 
+            ),
+            'w'
+        )
 
     # Check that the prompt is as expected
     expected_prompt = (
