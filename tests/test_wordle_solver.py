@@ -21,29 +21,53 @@ from wordle_solver import (
     ExperimentRecorder,
 )
 
+# prompt used to generate this module level fixture
+# "pytest module level fixture that creates a file callled "words.txt" containing 
+# these five letter words "apple", "water", "zebra" in a temporary directory. 
+# The file is created before the tests are run and is deleted at the end of the tests."
+
+WORDS = ["apple", "water", "zebra"]
+
+@pytest.fixture(scope="module", autouse=True)
+def word_file(tmp_path_factory):
+    # Create a temporary directory
+    temp_dir = tmp_path_factory.mktemp("data")
+    file_path = temp_dir / "words.txt"
+
+    # Write the words to the file
+    with open(file_path, "w") as f:
+        for word in WORDS:
+            f.write(word + "\n")
+
+    # Yield the file path for use in the tests
+    yield str(file_path)
+
+    # Remove the file after the tests are done
+    os.remove(file_path)
+
 
 ###
 # Tests for WordListGeneratorBase
 ###
-def test_is_letter_in_present():
-    word_list_generator = WordListGeneratorBase('data/five-letter-words.txt')
+def test_is_letter_in_present(word_file):
+    word_list_generator = WordListGeneratorBase(word_file)
     word_list_generator.global_state["present"].add((0, 'a'))
     assert word_list_generator.is_letter_in_present('a') == True
     assert word_list_generator.is_letter_in_present('b') == False
 
-def test_is_letter_in_correct():
-    word_list_generator = WordListGeneratorBase('data/five-letter-words.txt')
+def test_is_letter_in_correct(word_file):
+    word_list_generator = WordListGeneratorBase(word_file)
     word_list_generator.global_state["correct"].add((0, 'a'))
     assert word_list_generator.is_letter_in_correct('a') == True
     assert word_list_generator.is_letter_in_correct('b') == False
 
-def test_load():
-    word_list_generator = WordListGeneratorBase('data/five-letter-words.txt')
+def test_load(word_file):
+    word_list_generator = WordListGeneratorBase(word_file)
     word_list_generator.load()
     assert len(word_list_generator.candidate_words) > 0
 
-def test_update_state():
-    word_list_generator = WordListGeneratorBase('data/five-letter-words.txt')
+def test_update_state(word_file):
+    word_list_generator = WordListGeneratorBase(word_file)
     result = {
         "present": {(0, 'a')},
         "correct": {(1, 'b')},
@@ -52,8 +76,8 @@ def test_update_state():
     word_list_generator.update_state(result)
     assert word_list_generator.global_state == result
 
-def test_update_candidate_words():
-    word_list_generator = WordListGeneratorBase('data/five-letter-words.txt')
+def test_update_candidate_words(word_file):
+    word_list_generator = WordListGeneratorBase(word_file)
     word_list_generator.load()
     result = {
         "present": {(0, 'a')},
@@ -67,8 +91,8 @@ def test_update_candidate_words():
     assert after_size <= before_size
 
 
-def test_get_candidate_word():
-    word_list_generator = WordListGeneratorRandom('data/five-letter-words.txt')
+def test_get_candidate_word(word_file):
+    word_list_generator = WordListGeneratorRandom(word_file)
     word_list_generator.load()
     # had to add this section to make the test pass
     result = {
@@ -105,8 +129,9 @@ def setup_and_teardown():
         os.remove(file_path)
 
 # modifed generated 'def test_dump_file_count' to use the fixture
-def test_dump_file_count(setup_and_teardown):
-    word_list_generator = WordListGeneratorRandom('data/five-letter-words.txt')
+def test_dump_file_count(setup_and_teardown, word_file):
+
+    word_list_generator = WordListGeneratorRandom(word_file)
     word_list_generator.load()
 
     # had to add this section to make the test pass
@@ -133,7 +158,7 @@ def test_dump_file_count(setup_and_teardown):
 
 def test_generate_llm_prompt():
     # Create a WordListGeneratorLLM instance
-    word_list_generator = WordListGeneratorLLM('data/five-letter-words.txt')
+    word_list_generator = WordListGeneratorLLM(word_file)
 
     # Mock the update_candidate_words method to set the candidate_words attribute
     word_list_generator.update_candidate_words = lambda: setattr(word_list_generator, 'candidate_words', ['word1', 'word2', 'word3'])
