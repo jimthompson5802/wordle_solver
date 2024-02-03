@@ -370,7 +370,7 @@ class OpenAIInterface:
         model (str): The specific model to use.
     """
 
-    def __init__(self, api_key_file, model="gpt-4"):
+    def __init__(self, api_key, model="gpt-4"):
         """
         Initializes the OpenAIInterface with the API key and the model.
 
@@ -378,12 +378,10 @@ class OpenAIInterface:
         It also sets the model to use.
 
         Args:
-            api_key_file (str): The location of a JSON file with the API key.
+            api_key (str): API key string
             model (str, optional): The specific model to use. Defaults to "gpt-4".
         """
 
-        with open(api_key_file) as file:
-            api_key = json.load(file)["key"]
         self.openai_client = OpenAI(api_key=api_key)
         self.model = model
 

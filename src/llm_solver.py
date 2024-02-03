@@ -40,7 +40,9 @@ def main():
     wordle_virtual_assistant.load()
 
     # Create an OpenAIInterface object
-    openai_interface = OpenAIInterface("/openai/api_key.json")
+    with open("/openai/api_key.json") as f:
+        api_key = json.load(f)
+    openai_interface = OpenAIInterface(api_key["key"])
 
     # create initial guess
     if first_word:
