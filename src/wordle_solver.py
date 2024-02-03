@@ -302,7 +302,6 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             return generated_prompt
 
 
-
 class OpenAIInterface:
     """
     A class used to interface with the OpenAI API.
