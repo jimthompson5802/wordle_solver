@@ -264,6 +264,29 @@ class WordListGeneratorLLM(WordListGeneratorBase):
             case _:
                 return "unknown"
 
+    def generate_present_letter_prompt(self):
+        """
+        Generates a prompt for the user based on the present letters.
+
+        This method constructs a string that lists the letters in the word. If there are no present letters, an empty string is returned.
+
+        Returns:
+            str: A string that lists the present letters that must be present, or an empty string if there are no present letters.
+        """
+
+        if len(self.global_state["present"]) == 0:
+            prompt_specifics = ""
+        else:
+            tuple_list = list(self.global_state["present"])
+            present_letters = set([letter for _, letter in tuple_list])
+            prompt_specifics =  ", ".join(
+                [f"'{letter}'" for letter in present_letters]
+            )
+
+        if len(prompt_specifics) == 0:
+            return "\nSelect a common word.\n"
+        else:
+            return "\nSelect word that contains " + prompt_specifics + "\n"
 
     def generate_llm_prompt(self):
         """
@@ -292,14 +315,19 @@ class WordListGeneratorLLM(WordListGeneratorBase):
                 # otherwise, just the whole list for the prompt
                 self.prompt_word_list = '\n'.join(sorted(self.candidate_words))
 
+            present_word_prompt = self.generate_present_letter_prompt()
 
             generated_prompt = (
                 "Solve the puzzle by guessing a five-letter word using these clues.\n"
-                + "\nIf more than one word meets the criteria, select the word that is more common. "
-                + "Provide step-by-step instructions for how you arrived at the selected word. "
+                + present_word_prompt 
+                + "\nIf there is only one word that meets the above criteria, "
+                + "select that word.\n"
+                + "\nOn the other hand if more than one word meets the criteria or "
+                + "no words meet the criteria, select the word that is more common.\n"
+                + "\nProvide step-by-step instructions for how you arrived at the selected word. "
                 + "When writing the instructions, do not list words. "
-                + "Return only a json structure with the key 'recommendation' for the recommended word "
-                + "and 'explanation' for your explantion.\n"
+                + "Return only a json structure with the key 'recommendation' for "
+                + "the recommended word and 'explanation' for your explantion.\n"
                 + "List of candidate words:\n"
                 + self.prompt_word_list
             )
