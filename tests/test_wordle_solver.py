@@ -103,7 +103,19 @@ def test_get_candidate_word(word_file):
     word_list_generator.update_state(result)
     # end of section
 
-    word = word_list_generator.get_candidate_word()
+    with patch('builtins.open', new_callable=mock_open) as mock_file:
+        # Call the generate_llm_prompt method
+        word = word_list_generator.get_candidate_word()
+        # Check that the open function was called with the expected arguments
+        # relocated tis line here to match up with context variable
+        mock_file.assert_called_once_with(
+            os.path.join(
+                word_list_generator.dump_file_dir,
+                'candidates_001.txt', 
+            ),
+            'w'
+        )
+
     assert word in word_list_generator.candidate_words or word is None
 
 
@@ -144,27 +156,73 @@ def test_dump_file_count(setup_and_teardown, word_file):
     # end of section
 
     initial_count = word_list_generator.dump_file_count
-    word_list_generator.get_candidate_word()
-    assert word_list_generator.dump_file_count == initial_count + 1
 
-    # added code to confirm file was really created
-    file_path = os.path.join(word_list_generator.dump_file_dir, 'candidates_001.txt')
-    assert os.path.exists(file_path)
+    with patch('builtins.open', new_callable=mock_open) as mock_file:
+        # Call the generate_llm_prompt method
+        word_list_generator.get_candidate_word()
+        # Check that the open function was called with the expected arguments
+        # relocated tis line here to match up with context variable
+        mock_file.assert_called_once_with(
+            os.path.join(
+                word_list_generator.dump_file_dir,
+                'candidates_001.txt', 
+            ),
+            'w'
+        )
+
+    assert word_list_generator.dump_file_count == initial_count + 1
 
 
 ###
 # Tests for WordListGeneratorLLM
 ###    
 
-def test_generate_llm_prompt():
-    # Create a WordListGeneratorLLM instance
+def test_generate_present_letter_prompt_no_present_letters(word_file):
+    # Arrange
     word_list_generator = WordListGeneratorLLM(word_file)
+    word_list_generator.global_state["present"] = set()
 
-    # Mock the update_candidate_words method to set the candidate_words attribute
-    word_list_generator.update_candidate_words = lambda: setattr(word_list_generator, 'candidate_words', ['word1', 'word2', 'word3'])
+    # Act
+    result = word_list_generator.generate_present_letter_prompt()
 
+    # Assert
+    assert result == "\nSelect a common word.\n"
+
+def test_generate_present_letter_prompt_with_present_letters(word_file):
+    # Arrange
+    word_list_generator = WordListGeneratorLLM(word_file)
+    word_list_generator.global_state["present"] = {(1, 'a'), (2, 'b')}
+
+    # Act
+    result = word_list_generator.generate_present_letter_prompt()
+
+    # Assert
+    assert "\nSelect word that contains " in result
+    assert "'a'" in result
+    assert "'b'" in result
+
+def test_generate_llm_prompt_no_candidate_words(word_file):
+    # Arrange
+    word_list_generator = WordListGeneratorLLM(word_file)
+    word_list_generator.candidate_words = []
+
+    # Act
+    result = word_list_generator.generate_llm_prompt()
+
+    # Assert
+    assert result is None
+
+def test_generate_llm_prompt_with_candidate_words(word_file):
+    # setup conditions for the test
+    word_list_generator = WordListGeneratorLLM(word_file)
+    word_list_generator.candidate_words = ["apple", "water", "zebra"]
+    word_list_generator.global_state["present"] = {}
+    word_list_generator.global_state["correct"] = {}
+    word_list_generator.global_state["absent"] = {'z'}
+
+    # Act
     # Mock the open function to prevent writing to a file
-    # modified to correct naming conflic
+    # modified to correct naming conflict
     with patch('builtins.open', new_callable=mock_open) as mock_file:
         # Call the generate_llm_prompt method
         prompt = word_list_generator.generate_llm_prompt()
@@ -178,18 +236,54 @@ def test_generate_llm_prompt():
             'w'
         )
 
-    # Check that the prompt is as expected
-    expected_prompt = (
-        "Solve the puzzle by guessing a five-letter word using these clues.\n"
-        + "\nIf more than one word meets the criteria, select the word that is more common. "
-        + "Provide step-by-step instructions for how you arrived at the selected word. "
-        + "When writing the instructions, do not list words. "
-        + "Return only a json structure with the key 'recommendation' for the recommended word "
-        + "and 'explanation' for your explantion.\n"
-        + "List of candidate words:\n"
-        + 'word1\nword2\nword3'
-    )
-    assert prompt == expected_prompt
+    # Assert
+    assert "Solve the puzzle by guessing a five-letter word using these clues.\n" in prompt
+    assert "\nIf there is only one word that meets the above criteria, " in prompt
+    assert "select that word.\n" in prompt
+    assert "\nOn the other hand if more than one word meets the criteria or " in prompt
+    assert "no words meet the criteria, select the word that is more common.\n" in prompt
+    assert "\nProvide step-by-step instructions for how you arrived at the selected word. " in prompt
+    assert "When writing the instructions, do not list words. " in prompt
+    assert "Return only a json structure with the key 'recommendation' for " in prompt
+    assert "the recommended word and 'explanation' for your explantion.\n" in prompt
+    assert "List of candidate words:\n" in prompt
+    assert "apple" in prompt
+    assert "water" in prompt
+
+# def test_generate_llm_prompt():
+#     # Create a WordListGeneratorLLM instance
+#     word_list_generator = WordListGeneratorLLM(word_file)
+
+#     # Mock the update_candidate_words method to set the candidate_words attribute
+#     word_list_generator.update_candidate_words = lambda: setattr(word_list_generator, 'candidate_words', ['word1', 'word2', 'word3'])
+
+#     # Mock the open function to prevent writing to a file
+#     # modified to correct naming conflic
+#     with patch('builtins.open', new_callable=mock_open) as mock_file:
+#         # Call the generate_llm_prompt method
+#         prompt = word_list_generator.generate_llm_prompt()
+#         # Check that the open function was called with the expected arguments
+#         # relocated tis line here to match up with context variable
+#         mock_file.assert_called_once_with(
+#             os.path.join(
+#                 word_list_generator.dump_file_dir,
+#                 'prompts_001.txt', 
+#             ),
+#             'w'
+#         )
+
+#     # Check that the prompt is as expected
+#     expected_prompt = (
+#         "Solve the puzzle by guessing a five-letter word using these clues.\n"
+#         + "\nIf more than one word meets the criteria, select the word that is more common. "
+#         + "Provide step-by-step instructions for how you arrived at the selected word. "
+#         + "When writing the instructions, do not list words. "
+#         + "Return only a json structure with the key 'recommendation' for the recommended word "
+#         + "and 'explanation' for your explantion.\n"
+#         + "List of candidate words:\n"
+#         + 'word1\nword2\nword3'
+#     )
+#     assert prompt == expected_prompt
 
     
 
