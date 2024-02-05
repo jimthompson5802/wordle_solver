@@ -469,40 +469,47 @@ Example prompt:
 ```
 Solve the puzzle by guessing a five-letter word using these clues.
 
-If more than one word meets the criteria, select the word that is more common. Provide step-by-step instructions for how you arrived at the selected word. When writing the instructions, do not list words. Return only a json structure with the key 'recommendation' for the recommended word and 'explanation' for your explantion.
+Select word that contains 's', 't'
+
+If there is only one word that meets the above criteria, select that word.
+
+On the other hand if more than one word meets the criteria or no words meet the criteria, select the word that is more common.
+
+Provide step-by-step instructions for how you arrived at the selected word. When writing the instructions, do not list words. 
+Return only a json structure with the key 'recommendation' for the recommended word and 'explanation' for your explantion.
 List of candidate words:
-benjy
-bensh
-fease
-feaze
-fezzy
-gease
-gnash
-heave
-henge
-hewgh
-kebby
-kesse
-knave
-njave
-seave
-seavy
-sense
-shaky
-skaff
-snash
-swash
-weave
-webby
-whase
-yezzy
+blimp
+blimy
+chich
+chick
+chili
+chimp
+chizz
+clich
+glick
+glisk
+klick
+shilf
+shilh
+skiff
+skill
+skivy
+slich
+slick
+slily
+smily
+stich
+stiff
+stilb
+stivy
+thick
 ```
 
 Example JSON output
 ```
 {
-   "recommendation": "weave", 
-   "explanation": "The word 'weave' is selected because it is a common English word and it meets the criteria of being a five-letter word. Other words in the list may not be as commonly used or recognized in English."
+    "recommendation": "stich",
+    "explanation": "First, I filtered the list of candidate words to only include those that contain both 's' and 't'. From this filtered list, I selected the word 'stich' as it is the most common word that meets the criteria."
 }
 ```
 
